@@ -1,138 +1,79 @@
 <script>
-	let radius = "75",
-		stroke = "30",
-		dataoffset,
-		it = 0,
-		id = 0
-	$: dash = 2 * radius * 3.14
-	const colors = [
-		{ color: "#50aef4" },
-		{ color: "#3ab011" },
-		{ color: "#ff8e29" },
-		{ color: "#890c85" },
-		{ color: "#e91e25" },
-		{ color: "#ffc83f" }
-	]
+	import Svgbox from "./components/Svgbox.svelte"
+	import Svgarc from "./components/Svgarc.svelte"
+	import DataItems from "./components/DataItems.svelte"
+	import SVGSettings from "./components/SVGSettings.svelte"
+	import LabelInput from "./components/LabelInput.svelte"
 
-	$: width = "180"
-	$: height = width
-	$: vbWidth = parseInt(radius) * 2 + parseInt(stroke)
-	$: cx = parseInt(radius) + parseInt(stroke) / 2
+	let radius = 200
 
-	$: vbHeight = vbWidth
-	$: cy = cx
-	$: viewBox = `0 0 ${vbWidth} ${vbHeight}`
-	$: dataitems = []
+	function polarToCartesian(centerX, centerY, radius, angleInDegrees) {
+  var angleInRadians = (angleInDegrees-90) * Math.PI / 180.0;
 
-	function summd() {
-		let sum = 0
-		dataitems.map(e => (sum = sum + e.data))
-		dataitems.map(f => {
-			if (f.id === dataitems.length - 1) return
-			f.offset = dash - (f.data / sum) * dash * (f.id + 1)
-		})
-	}
+  return {
+    x: centerX + (radius * Math.cos(angleInRadians)),
+    y: centerY + (radius * Math.sin(angleInRadians))
+  };
+}
 
-	function onc() {
-		console.log("dwdwd")
-	}
+function describeArc(x, y, radius, startAngle, endAngle){
 
-	function handleReset() {
-		width = "180"
-		radius = "75"
-		stroke = "30"
-		it = 0
-		id = 0
-		dataitems = dataitems.splice(...dataitems, dataitems.length)
-	}
+    var start = polarToCartesian(x, y, radius, endAngle);
+    var end = polarToCartesian(x, y, radius, startAngle);
 
-	function additem() {
-		dataitems = dataitems.concat(
-			dataitems.splice(0, 0, {
-				id: id,
-				data: 100,
-				offset: 0,
-				color: colors[it].color
-			})
-		)
+    var largeArcFlag = endAngle - startAngle <= 180 ? "0" : "1";
 
-		summd()
+    var d = [
+        "M", start.x, start.y, 
+        "A", radius, radius, 0, largeArcFlag, 0, end.x, end.y
+    ].join(" ");
 
-		++id
-		++it
-		if (it >= 5) {
-			it = 0
-		}
-	}
+    return d;
+}
+
+	let width = "300",
+			height = "300",
+			viewBox = `0 0 ${width} ${height}`,
+			color = "#333333",
+			strokeWidth = "20"
+	let r = parseInt(width)/2 - parseInt(strokeWidth) + parseInt(strokeWidth)/2
+	let cx = parseInt(width)/2
+	let cy = parseInt(height)/2
 </script>
 
 <main>
-	<h1>Donut SVG generator</h1>
-	<input
-		type="number"
-		min="0"
-		step="1"
-		placeholder="radius"
-		bind:value="{radius}"
-	/>
-	<input
-		type="number"
-		min="0"
-		step="1"
-		placeholder="stroke"
-		bind:value="{stroke}"
-	/>
-	<input
-		type="number"
-		min="0"
-		step="1"
-		max="440"
-		placeholder="width"
-		bind:value="{width}"
-	/>
-	<button on:click="{handleReset}" type="submit">Reset</button>
-	<button on:click="{ additem}" type="submit">Add item</button>
-	{#each dataitems as dataitem}
-	<input
-		type="number"
-		min="0"
-		step="1"
-		max="440"
-		placeholder="{dataitem.data}"
-		on:change="{onc}"
-	/>
-	{/each}
-	<div class="ch">
-		<svg {width} {height} {viewBox} class="donut" transform="rotate(-90)">
-			<circle
-				{cx}
-				{cy}
-				r="{radius}"
-				fill="none"
-				stroke="#ccc"
-				stroke-width="{stroke}"
-			></circle>
-			{#each dataitems as dataitem}
-			<circle
-				{cx}
-				{cy}
-				r="{radius}"
-				fill="none"
-				stroke="{dataitem.color}"
-				stroke-width="{stroke}"
-				stroke-dasharray="{dash}"
-				stroke-dashoffset="{dataitem.offset}"
-			></circle>
-			{/each}
-		</svg>
+	<div class="wrapper">
+		<div class="content">
+			<Svgbox {width} {height} {viewBox}>
+				<Svgarc arcFill={color} arcWidth={20} arcData={describeArc(cx, cy, r, 0, 270)}/>
+			</Svgbox>
+			<div class="settings">
+				<SVGSettings>
+					<LabelInput labelName="wdwdwd" placeholder="wdwddw"/>
+				</SVGSettings>
+				<DataItems>
+
+				</DataItems>
+			</div>
+		</div>
 	</div>
 </main>
 
+
 <style>
-	h1 {
-		color: #ff3e00;
-		text-transform: uppercase;
-		font-size: 4em;
-		font-weight: 100;
+	.wrapper {
+		width: 100vw;
+		height: 100vh;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+	}
+	.content {
+		display: flex;
+		flex-direction: row;
+		justify-content: flex-start;
+	}
+	.settings {
+		padding: 24px;
 	}
 </style>
