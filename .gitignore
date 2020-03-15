@@ -1,2 +1,5 @@
 .now
 node_modules/
+DS_Store
+.code-workspace
+public/build
