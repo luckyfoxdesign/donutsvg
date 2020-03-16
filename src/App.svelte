@@ -4,6 +4,7 @@
 	import DataItems from "./components/DataItems.svelte"
 	import SVGSettings from "./components/SVGSettings.svelte"
 	import LabelInput from "./components/LabelInput.svelte"
+	import DonutHeader from "./components/DonutHeader.svelte"
 
 	let radius = 200
 
@@ -43,13 +44,16 @@ function describeArc(x, y, radius, startAngle, endAngle){
 
 <main>
 	<div class="wrapper">
+		<DonutHeader/>
 		<div class="content">
 			<Svgbox {width} {height} {viewBox}>
 				<Svgarc arcFill={color} arcWidth={20} arcData={describeArc(cx, cy, r, 0, 270)}/>
 			</Svgbox>
 			<div class="settings">
 				<SVGSettings>
-					<LabelInput labelName="wdwdwd" placeholder="wdwddw"/>
+					<LabelInput labelName="Radius" placeholder="wdwddw"/>
+					<LabelInput labelName="Stroke-width" placeholder="wdwddw"/>
+					<LabelInput labelName="SVG Size" placeholder="wdwddw"/>
 				</SVGSettings>
 				<DataItems>
 
@@ -65,15 +69,21 @@ function describeArc(x, y, radius, startAngle, endAngle){
 		width: 100vw;
 		height: 100vh;
 		display: flex;
-		align-items: center;
+		/* align-items: center; */
 		justify-content: center;
+		position: relative;
 	}
 	.content {
 		display: flex;
 		flex-direction: row;
-		justify-content: flex-start;
+		position: absolute;
+		left: 50;
+		top: 200;
+		margin-top: 210px;
+		z-index: 2;
 	}
 	.settings {
 		padding: 24px;
+		background-color: #FF8BA3;
 	}
 </style>
