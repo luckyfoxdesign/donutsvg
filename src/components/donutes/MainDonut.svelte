@@ -7,7 +7,7 @@
 		<h2>Donut chart</h2>
 		<h3>SVG generator</h3>
 	</div>
-	<img class="main-donut" src="/img/donut.png" alt="" />
+	<img class="progressive main-donut" src="/img/donut.png" alt="" />
 	<SmallDonut lf="-22%" tp="43%" w="80"/>
 	<SmallDonut lf="-72%" tp="13%" w="160"/>
 	<SmallDonut lf="142%" tp="-23%" w="160"/>

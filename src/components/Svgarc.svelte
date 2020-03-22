@@ -4,7 +4,7 @@
 
 <path
 	id="{arcID}"
-	fill="none"
+	fill="{arcFill}"
 	stroke="{arcFill}"
 	stroke-width="{arcWidth}"
 	d="{arcData}"

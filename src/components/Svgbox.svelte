@@ -1,9 +1,9 @@
 <script>
-	export let width, height, viewBox
+	export let width, height, viewBox, svgId
 </script>
 
 <div class="chart-box">
-	<svg {width} {height} {viewBox}>
+	<svg id="{svgId}" {width} {height} {viewBox}>
 		<slot></slot>
 	</svg>
 </div>

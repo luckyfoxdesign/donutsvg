@@ -3,7 +3,7 @@
 </script>
 
 <img
-	class="small-donut"
+	class="progressive small-donut"
 	width="{w}"
 	src="/img/small-donut.png"
 	alt=""

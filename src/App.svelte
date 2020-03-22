@@ -5,55 +5,126 @@
 	import SVGSettings from "./components/SVGSettings.svelte"
 	import LabelInput from "./components/LabelInput.svelte"
 	import DonutHeader from "./components/DonutHeader.svelte"
+	//
 
-	let radius = 200
+	let outerInput = "", innerInput = ""
+	let radius = "90"
+	$: viewBox = `0 0 ${parseInt(radius) * 2} ${parseInt(radius) * 2}`
+	let fill = '#333333'
+	$: outerRad = parseInt(radius)
+	let innerRad = 60
+	$: ar = arc(180, 359, outerRad, innerRad)
+	let cb = 'cb'
 
-	function polarToCartesian(centerX, centerY, radius, angleInDegrees) {
-  var angleInRadians = (angleInDegrees-90) * Math.PI / 180.0;
+// A x-radius, y-radius x-axis-rotation large-arc-flag sweep-flag x-end-point y-end-point
 
-  return {
-    x: centerX + (radius * Math.cos(angleInRadians)),
-    y: centerY + (radius * Math.sin(angleInRadians))
+function arc(startAngle, endAngle, outerRadius, innerRadius = 0) {
+	startAngle = startAngle * Math.PI/180
+	endAngle = endAngle * Math.PI/180
+  const sinAlpha = Math.sin(startAngle);
+  const cosAlpha = Math.cos(startAngle);
+  const sinBeta = Math.sin(endAngle);
+  const cosBeta = Math.cos(endAngle);
+
+  const largeArc = endAngle - startAngle > Math.PI;
+
+  const P = {
+    x: outerRadius + (outerRadius * sinAlpha),
+    y: outerRadius - (outerRadius * cosAlpha)
   };
+
+  const Q = {
+    x: outerRadius + (outerRadius * sinBeta),
+    y: outerRadius - (outerRadius * cosBeta)
+  };
+
+  const R = {
+    x: outerRadius + (innerRadius * sinBeta),
+    y: outerRadius - (innerRadius * cosBeta)
+  };
+
+  const S = {
+    x: outerRadius + (innerRadius * sinAlpha),
+    y: outerRadius - (innerRadius* cosAlpha)
+  }
+
+  return `M${P.x},${P.y} A${outerRadius},${outerRadius} 0 ${largeArc ? '1' : '0'} 1 ${Q.x},${Q.y} L${R.x},${R.y} A${innerRadius},${innerRadius} 0 ${largeArc ? '1' : '0'} 0 ${S.x},${S.y} Z`;
 }
 
-function describeArc(x, y, radius, startAngle, endAngle){
-
-    var start = polarToCartesian(x, y, radius, endAngle);
-    var end = polarToCartesian(x, y, radius, startAngle);
-
-    var largeArcFlag = endAngle - startAngle <= 180 ? "0" : "1";
-
-    var d = [
-        "M", start.x, start.y, 
-        "A", radius, radius, 0, largeArcFlag, 0, end.x, end.y
-    ].join(" ");
-
-    return d;
+function setOuterRadius() {
+	let val = this.value
+	let intInputVal = parseInt(val)
+	let intInnerRadius = parseInt(innerRad)
+	switch (true) {
+		case intInputVal < intInnerRadius:
+			if((val - 1) <= 0) {
+				console.log('val-1 <= 0')
+				innerInput = innerRad = 1 
+				outerInput = radius = 2
+			} else {
+				console.log('val < inner and > 0')
+				innerRad = parseInt(val) - 1
+				outerInput = radius = val
+				innerInput = innerRad
+			}
+			break
+		case intInputVal == intInnerRadius:
+			console.log('val = inner')
+			routerInput = radius = intInnerRadius + 1
+			break;
+		case intInputVal > 220:
+			console.log('val > 220')
+			outerInput = radius = 220
+			this.value = 220
+			break;
+		default:
+			outerInput = radius = this.value
+	}
 }
 
-	let width = "300",
-			height = "300",
-			viewBox = `0 0 ${width} ${height}`,
-			color = "#333333",
-			strokeWidth = "20"
-	let r = parseInt(width)/2 - parseInt(strokeWidth) + parseInt(strokeWidth)/2
-	let cx = parseInt(width)/2
-	let cy = parseInt(height)/2
+function setInnerRadius() {
+	let val = this.value
+	let intInputVal = parseInt(val)
+	let intInnerRadius = parseInt(innerRad)
+	switch (true) {
+		case intInputVal > 219:
+			console.log('val > 219')
+			outerInput = radius = 220
+			this.value = 219
+			innerInput = innerRad = 219
+			break;
+		case intInputVal > parseInt(radius):
+			console.log('val > outer')
+			outerInput = radius = intInputVal + 1
+			innerInput = val
+			break;
+		case outerInput == parseInt(radius):
+			console.log('val = outer')
+			outerInput = radius = parseInt(radius) + 1
+			innerInput = val
+			break;
+		case intInputVal <= 0:
+			console.log('val <= 0')
+			innerInput = innerRad = 1
+		default:
+			innerInput = innerRad = val
+			break;
+	}
+}
+
 </script>
 
 <main>
 	<div class="wrapper">
 		<DonutHeader/>
 		<div class="content">
-			<Svgbox {width} {height} {viewBox}>
-				<Svgarc arcFill={color} arcWidth={20} arcData={describeArc(cx, cy, r, 0, 270)}/>
+			<Svgbox svgId={cb} width={parseInt(radius*2)} height={parseInt(radius*2)} {viewBox}>
+				<Svgarc arcFill={fill} arcWidth={0} arcData={ar}/>
 			</Svgbox>
 			<div class="settings">
 				<SVGSettings>
-					<LabelInput labelName="Radius" placeholder="wdwddw"/>
-					<LabelInput labelName="Stroke-width" placeholder="wdwddw"/>
-					<LabelInput labelName="SVG Size" placeholder="wdwddw"/>
+					<LabelInput labelName="Inner Radius" bind:placeholder="{innerRad}" max="{219}" onInput="{setInnerRadius}" value={innerInput}/>
+					<LabelInput labelName="Outer Radius" bind:placeholder="{outerRad}" max="{220}" onInput="{setOuterRadius}" value={outerInput}/>
 				</SVGSettings>
 				<DataItems>
 
