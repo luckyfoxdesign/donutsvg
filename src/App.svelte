@@ -53,61 +53,66 @@ function arc(startAngle, endAngle, outerRadius, innerRadius = 0) {
 
 function setOuterRadius() {
 	let val = this.value
-	let intInputVal = parseInt(val)
+	let intInputValue = parseInt(val)
 	let intInnerRadius = parseInt(innerRad)
 	switch (true) {
-		case intInputVal < intInnerRadius:
-			if((val - 1) <= 0) {
+		case intInputValue < intInnerRadius:
+			if((intInputValue - 1) <= 0) {
 				console.log('val-1 <= 0')
-				innerInput = innerRad = 1 
-				outerInput = radius = 2
+				innerInput = innerRad = 1
+				this.value = radius = 2
 			} else {
 				console.log('val < inner and > 0')
-				innerRad = parseInt(val) - 1
-				outerInput = radius = val
-				innerInput = innerRad
+				radius = val
+				innerInput = innerRad = intInputValue - 1
 			}
 			break
-		case intInputVal == intInnerRadius:
+		case val == innerRad:
 			console.log('val = inner')
-			routerInput = radius = intInnerRadius + 1
+			radius = val
+			innerInput = intInnerRadius - 1
 			break;
-		case intInputVal > 220:
+		case parseInt(val) > 220:
 			console.log('val > 220')
-			outerInput = radius = 220
-			this.value = 220
+			this.value = radius = 220
 			break;
 		default:
-			outerInput = radius = this.value
+			radius = this.value
+			outerInput = radius
 	}
 }
 
 function setInnerRadius() {
 	let val = this.value
-	let intInputVal = parseInt(val)
-	let intInnerRadius = parseInt(innerRad)
+	//console.log(`val: ${typeof val} and rad: ${typeof radius}`)
 	switch (true) {
-		case intInputVal > 219:
+		case parseInt(val) > 219:
 			console.log('val > 219')
-			outerInput = radius = 220
+			radius = 220
+			outerInput = radius
 			this.value = 219
-			innerInput = innerRad = 219
+			innerRad = 219
+			innerInput = innerRad
 			break;
-		case intInputVal > parseInt(radius):
+		case parseInt(val) > parseInt(radius):
 			console.log('val > outer')
-			outerInput = radius = intInputVal + 1
+			radius = parseInt(val) + 1
+			outerInput = radius
 			innerInput = val
 			break;
-		case outerInput == parseInt(radius):
+		case val == radius:
 			console.log('val = outer')
-			outerInput = radius = parseInt(radius) + 1
+			radius = parseInt(radius) + 1
+			outerInput = radius
 			innerInput = val
 			break;
-		case intInputVal <= 0:
+		case parseInt(val) <= 0:
 			console.log('val <= 0')
-			innerInput = innerRad = 1
+			innerRad = 1
+			innerInput = innerRad
 		default:
-			innerInput = innerRad = val
+			innerRad = val
+			innerInput = val
 			break;
 	}
 }
