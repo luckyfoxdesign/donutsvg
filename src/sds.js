@@ -92,3 +92,108 @@
 	}
 	f_update()
 }
+
+function setOuterRadius() {
+	let val = this.value
+	let intInputValue = parseInt(val)
+	let intInnerRadius = parseInt(innerRad)
+	switch (true) {
+		case intInputValue < intInnerRadius:
+			if (intInputValue - 1 <= 0) {
+				console.log("val-1 <= 0")
+				innerInput = innerRad = 1
+				this.value = outerInput = radius = 2
+			} else {
+				console.log("val < inner and > 0")
+				radius = val
+				innerInput = innerRad = intInputValue - 1
+			}
+			break
+		case val == innerRad:
+			console.log("val = inner")
+			radius = val
+			innerInput = intInnerRadius - 1
+			break
+		case parseInt(val) > 220:
+			console.log("val > 220")
+			this.value = radius = 220
+			break
+		default:
+			radius = this.value
+			outerInput = radius
+	}
+}
+
+function setInnerRadius() {
+	let val = this.value
+	let intInputValue = parseInt(val)
+	switch (true) {
+		case intInputValue > 219:
+			console.log("val > 219")
+			outerInput = radius = 220
+			this.value = 219
+			break
+		case intInputValue > parseInt(radius):
+			console.log("val > outer")
+			outerInput = radius = intInputValue + 1
+			innerInput = val
+			break
+		case val == radius:
+			console.log("val = outer")
+			radius = parseInt(radius) + 1
+			outerInput = radius
+			innerInput = val
+			break
+		case intInputValue <= 0:
+			console.log("val <= 0")
+			innerRad = val = 1
+		default:
+			innerRad = val
+			innerInput = val
+			break
+	}
+}
+
+function ResetRadius() {
+	innerInput = ""
+	outerInput = ""
+	radius = "90"
+	innerRad = 60
+}
+
+function arc(startAngle, endAngle, outerRadius, innerRadius = 0) {
+	startAngle = (startAngle * Math.PI) / 180
+	endAngle = (endAngle * Math.PI) / 180
+	const sinAlpha = Math.sin(startAngle)
+	const cosAlpha = Math.cos(startAngle)
+	const sinBeta = Math.sin(endAngle)
+	const cosBeta = Math.cos(endAngle)
+
+	const largeArc = endAngle - startAngle > Math.PI
+
+	const P = {
+		x: outerRadius + outerRadius * sinAlpha,
+		y: outerRadius - outerRadius * cosAlpha
+	}
+
+	const Q = {
+		x: outerRadius + outerRadius * sinBeta,
+		y: outerRadius - outerRadius * cosBeta
+	}
+
+	const R = {
+		x: outerRadius + innerRadius * sinBeta,
+		y: outerRadius - innerRadius * cosBeta
+	}
+
+	const S = {
+		x: outerRadius + innerRadius * sinAlpha,
+		y: outerRadius - innerRadius * cosAlpha
+	}
+
+	return `M${P.x},${P.y} A${outerRadius},${outerRadius} 0 ${
+		largeArc ? "1" : "0"
+	} 1 ${Q.x},${Q.y} L${R.x},${R.y} A${innerRadius},${innerRadius} 0 ${
+		largeArc ? "1" : "0"
+	} 0 ${S.x},${S.y} Z`
+}
