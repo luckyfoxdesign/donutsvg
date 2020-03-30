@@ -1,7 +1,17 @@
 <script>
+	import { onMount } from "svelte"
+	import copy from 'copy-to-clipboard';
+
 	let outerRadius = 90,
 		innerRadius = 60,
 		gap = 0
+	let cc
+
+	$: svgCode = cc
+
+	onMount(async () => {
+		cc = await document.getElementById("copyto").innerHTML
+	})
 
 	$: viewBoxSize = outerRadius * 2
 	$: viewBox = `0 0 ${viewBoxSize} ${viewBoxSize}`
@@ -40,6 +50,8 @@
 		mapItems(returnItemsSumm())
 
 		chartItems = items
+
+		cc = document.getElementById("copyto").innerHTML
 	}
 
 	function getHexStringColor() {
@@ -78,7 +90,7 @@
 
 		return `M${P.x}, ${P.y} A${or},${or} 0 ${largeArc ? "1" : "0"} 1 ${Q.x},${
 			Q.y
-		} L${R.x},${R.y} A${ir},${ir} 0 ${largeArc ? "1" : "0"} 0 ${S.x},${S.y} Z`
+			} L${R.x},${R.y} A${ir},${ir} 0 ${largeArc ? "1" : "0"} 0 ${S.x},${S.y} Z`
 	}
 
 	function writeInnerRadius() {
@@ -159,18 +171,26 @@
 
 		chartItems = items
 	}
+
+	function copyToClipboard() {
+		copy(svgCode)
+		console.log("clock")
+	}
 </script>
 
 <main>
-	<svg width="{viewBoxSize}" height="{viewBoxSize}" {viewBox}>
-		{#if items == 0} //
-		<path id="0" fill="#333333" d="{arc(0, 359.99, 90, 60)}" />
-		{:else} {#each chartItems as { id, fill, d}}
-		<path {id} {fill} {d} />
-		{/each} {/if}
-	</svg>
+	<div id="copyto">
+		<svg width="{viewBoxSize}" height="{viewBoxSize}" {viewBox}>
+			{#if items == 0} //
+			<path id="0" fill="#333333" d="{arc(0, 359.99, 90, 60)}" />
+			{:else} {#each chartItems as { id, fill, d}}
+			<path {id} {fill} {d} />
+			{/each} {/if}
+		</svg>
+	</div>
+	<textarea name="" id="copy2" cols="30" rows="10">{svgCode}</textarea>
 	<button type="submit" on:click="{addNewChartItem}">Add new chart item</button>
-	<button type="submit">
+	<button type="submit" on:click="{copyToClipboard}">
 		Copy to clipboard
 	</button>
 	<input
