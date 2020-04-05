@@ -5,5 +5,3 @@ const app = new App({
 })
 
 export default app
-
-// {width/2} {width/2}

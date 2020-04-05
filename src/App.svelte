@@ -152,7 +152,7 @@
 	}
 
 	function changeItemColor() {
-		items.find(e => e.id == this.parentNode.id).value = parseInt(this.value)
+		items.find(e => e.id == this.parentNode.id).fill = this.value
 		writeAnglesAndPathsFakearr(returnItemsSumm())
 		chartItems = items
 	}
