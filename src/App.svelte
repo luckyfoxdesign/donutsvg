@@ -4,7 +4,6 @@
 	import "../node_modules/uikit/dist/css/uikit.min.css"
 	import UIkit from "uikit"
 	import Icons from "uikit/dist/js/uikit-icons"
-	import validateValue from "./utils/utils"
 
 	let clr = "#8a54b2"
 
@@ -26,7 +25,7 @@
 
 	let fakeSvgTabsArr = [
 		{ title: "SVG Chart", active: "uk-active" },
-		{ title: "View Code", active: "" }
+		{ title: "View Code", active: "" },
 	]
 
 	$: svgTabsArr = fakeSvgTabsArr
@@ -38,11 +37,11 @@
 			value: 360,
 			start: 0,
 			end: 359.99,
-			d: arc(0, 359.99, outerRadius, innerRadius)
-		}
+			d: arc(0, 359.99, outerRadius, innerRadius),
+		},
 	]
-	$: chartItems = items
 
+	$: chartItems = items
 	$: itemsCount = chartItems.length
 
 	function addNewChartItem() {
@@ -52,7 +51,7 @@
 			value: 360,
 			start: 0,
 			end: 0,
-			d: ""
+			d: "",
 		})
 
 		writeAnglesAndPathsFakearr(returnItemsSumm())
@@ -77,46 +76,129 @@
 
 		const P = {
 			x: or + or * sinAlpha,
-			y: or - or * cosAlpha
+			y: or - or * cosAlpha,
 		}
 
 		const Q = {
 			x: or + or * sinBeta,
-			y: or - or * cosBeta
+			y: or - or * cosBeta,
 		}
 
 		const R = {
 			x: or + ir * sinBeta,
-			y: or - ir * cosBeta
+			y: or - ir * cosBeta,
 		}
 
 		const S = {
 			x: or + ir * sinAlpha,
-			y: or - ir * cosAlpha
+			y: or - ir * cosAlpha,
 		}
 
 		return `M${P.x}, ${P.y} A${or},${or} 0 ${largeArc ? "1" : "0"} 1 ${Q.x},${Q.y} L${R.x},${R.y} A${ir},${ir} 0 ${largeArc ? "1" : "0"} 0 ${S.x},${S.y} Z`
 	}
 
 	function writeInnerRadius() {
+		console.log(this.value)
 		innerRadius = parseInt(this.value)
-		items.map(e => {
-			e.d = arc(e.start, e.end, outerRadius, innerRadius)
+		validateInnerRadius(innerRadius, outerRadius).then((r) => {
+			console.log(r)
+			innerRadius = r.ir
+			outerRadius = r.or
+			items.map((e) => {
+				e.d = arc(e.start, e.end, outerRadius, innerRadius)
+			})
+			chartItems = items
 		})
-		chartItems = items
-		validateValue(true).then(console.log(this.value))
+	}
+
+	function validateInnerRadius(innerRadiusValue, outerRadiusValue) {
+		let or = outerRadiusValue
+		let ir = innerRadiusValue
+		return new Promise((res, rej) => {
+			switch (true) {
+				case isNaN(ir):
+					console.log("ir=")
+					ir = 0
+					res({ or: or, ir: ir })
+					break
+				case ir > or:
+					console.log("ir>or or ir>199")
+					if (ir > 199) ir = 199
+					or = ir + 1
+					res({ or: or, ir: ir })
+					break
+				case ir < 0:
+					console.log("ir < 0")
+					ir = 0
+					res({ or: or, ir: ir })
+					break
+				case ir == or:
+					console.log("ir==or")
+					if (ir > 199) ir = 199
+					or = ir + 1
+					res({ or: or, ir: ir })
+					break
+				default:
+					res({ or: or, ir: ir })
+					break
+			}
+		})
 	}
 
 	function writeOuterRadius() {
+		console.log(parseInt(this.value))
 		outerRadius = parseInt(this.value)
-		items.map(e => {
-			e.d = arc(e.start, e.end, outerRadius, innerRadius)
+		validateOuterRadius(innerRadius, outerRadius).then((r) => {
+			console.log(r)
+			innerRadius = r.ir
+			outerRadius = r.or
+			items.map((e) => {
+				e.d = arc(e.start, e.end, outerRadius, innerRadius)
+			})
+			chartItems = items
 		})
-		chartItems = items
+	}
+
+	function validateOuterRadius(innerRadiusValue, outerRadiusValue) {
+		let or = outerRadiusValue
+		let ir = innerRadiusValue
+		return new Promise((res, rej) => {
+			switch (true) {
+				case isNaN(or):
+					console.log("or=")
+					or = 1
+					res({ or: or, ir: ir })
+					break
+				case or < ir:
+					console.log("or<ir")
+					if (or < 1) or = 1
+					ir = or - 1
+					res({ or: or, ir: ir })
+					break
+				case or > 200:
+					console.log("or>200")
+					or = 200
+					res({ or: or, ir: ir })
+					break
+				case or <= 0:
+					console.log("or<=0")
+					or = 1
+					res({ or: or, ir: ir })
+					break
+				case or == ir:
+					console.log("or==ir")
+					ir = ir - 1
+					res({ or: or, ir: ir })
+					break
+				default:
+					res({ or: or, ir: ir })
+					break
+			}
+		})
 	}
 
 	function writeNewValue() {
-		items.find(e => e.id == this.parentNode.id).value = parseInt(this.value)
+		items.find((e) => e.id == this.parentNode.id).value = parseInt(this.value)
 		writeAnglesAndPathsFakearr(returnItemsSumm())
 		chartItems = items
 	}
@@ -134,8 +216,8 @@
 			e.id = i
 			let part = (e.value / itemsArrSumm) * multiplier
 			if (e.id != 0) {
-				e.start = items.find(f => f.id == i - 1).end + gap
-				e.end = items.find(f => f.id == i - 1).end + part
+				e.start = items.find((f) => f.id == i - 1).end + gap
+				e.end = items.find((f) => f.id == i - 1).end + part
 				e.d = arc(e.start, e.end, outerRadius, innerRadius)
 			} else {
 				e.start = gap == 0 ? 0 : gap / 2
@@ -147,12 +229,38 @@
 
 	function changeItemsGap() {
 		gap = parseInt(this.value)
-		writeAnglesAndPathsFakearr(returnItemsSumm())
-		chartItems = items
+		validateGap(gap).then((r) => {
+			gap = r
+			writeAnglesAndPathsFakearr(returnItemsSumm())
+			chartItems = items
+		})
+	}
+
+	// обработать у радиусов пустое значение
+
+	function validateGap(value) {
+		let gp = value
+		return new Promise((res, rej) => {
+			switch (true) {
+				case gp < 0:
+					console.log("gap<0")
+					gp = 0
+					res(gp)
+					break
+				case isNaN(gp):
+					console.log("gp=")
+					gp = 0
+					res(gp)
+					break
+				default:
+					res(gp)
+					break
+			}
+		})
 	}
 
 	function changeItemColor() {
-		items.find(e => e.id == this.parentNode.id).fill = this.value
+		items.find((e) => e.id == this.parentNode.id).fill = this.value
 		writeAnglesAndPathsFakearr(returnItemsSumm())
 		chartItems = items
 	}
@@ -188,9 +296,9 @@
 		}
 	}
 	function changeTab() {
-		let tab = fakeSvgTabsArr.find(e => e.title === this.innerHTML)
+		let tab = fakeSvgTabsArr.find((e) => e.title === this.innerHTML)
 		if (tab.active != "uk-active") {
-			fakeSvgTabsArr.map(e => {
+			fakeSvgTabsArr.map((e) => {
 				if (e.title === this.innerHTML) e.active = "uk-active"
 				else e.active = ""
 			})
@@ -229,9 +337,9 @@
 				<div class="settings-container">
 					<h4 class="uk-heading-line header-set"><span>SVG Settings</span></h4>
 					<div class="svg-settings">
-						<input class="uk-input" type="number" placeholder="Outer Radius" on:change="{writeOuterRadius}" />
-						<input class="uk-input" type="number" placeholder="Inner Radius" on:change="{writeInnerRadius}" />
-						<input class="uk-input" type="number" placeholder="Items Gap" on:change="{changeItemsGap}" />
+						<input class="uk-input input-outer-radius" type="text" placeholder="Outer Radius" on:change="{writeOuterRadius}" value="{outerRadius}" />
+						<input class="uk-input" type="text" placeholder="Inner Radius" on:change="{writeInnerRadius}" value="{innerRadius}" />
+						<input class="uk-input" type="text" placeholder="Items Gap" on:change="{changeItemsGap}" value="{gap}" />
 						<button class="uk-button uk-button-secondary" type="submit" on:click="{resetChart}">Reset</button>
 					</div>
 					<div class="chart-items">
