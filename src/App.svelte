@@ -94,7 +94,9 @@
 			y: or - ir * cosAlpha,
 		}
 
-		return `M${P.x}, ${P.y} A${or},${or} 0 ${largeArc ? "1" : "0"} 1 ${Q.x},${Q.y} L${R.x},${R.y} A${ir},${ir} 0 ${largeArc ? "1" : "0"} 0 ${S.x},${S.y} Z`
+		return `M${P.x}, ${P.y} A${or},${or} 0 ${largeArc ? "1" : "0"} 1 ${Q.x},${Q.y} L${R.x},${R.y} A${ir},${ir} 0 ${
+			largeArc ? "1" : "0"
+		} 0 ${S.x},${S.y} Z`
 	}
 
 	function writeInnerRadius() {
@@ -109,6 +111,17 @@
 			})
 			chartItems = items
 		})
+	}
+
+	function removeCharFromValue() {
+		let regex = /^\d+$/
+		let value = this.value
+		let onlyNumberStringValue = ""
+		value.split("").forEach((char) => {
+			if (regex.test(char)) onlyNumberStringValue += char
+			else return
+		})
+		this.value = onlyNumberStringValue
 	}
 
 	function validateInnerRadius(innerRadiusValue, outerRadiusValue) {
@@ -314,7 +327,9 @@
 				<div class="svg-tabs">
 					<ul uk-tab>
 						{#each svgTabsArr as {active, title}}
-						<li class="{active}"><a href="" on:click="{changeTab}">{title}</a></li>
+						<li class="{active}">
+							<a href="" on:click="{changeTab}">{title}</a>
+						</li>
 						{/each}
 					</ul>
 				</div>
@@ -331,29 +346,89 @@
 					<textarea name="" id="svg-code" class="uk-textarea" cols="30" rows="10">{svgCode}</textarea>
 					{/if}
 				</div>
-				<button class="uk-button uk-button-default" type="submit" on:click="{copyToClipboard}">Copy to clipboard</button>
+				<div class="save-buttons">
+					<button class="uk-button uk-button-default" type="submit" on:click="{copyToClipboard}">
+						Copy to clipboard
+					</button>
+					<button class="uk-button uk-button-default" type="submit">
+						Save as PNG
+					</button>
+				</div>
 			</div>
 			<div class="chart-settings">
 				<div class="settings-container">
 					<h4 class="uk-heading-line header-set"><span>SVG Settings</span></h4>
 					<div class="svg-settings">
-						<input class="uk-input input-outer-radius" type="text" placeholder="Outer Radius" on:change="{writeOuterRadius}" value="{outerRadius}" />
-						<input class="uk-input" type="text" placeholder="Inner Radius" on:change="{writeInnerRadius}" value="{innerRadius}" />
-						<input class="uk-input" type="text" placeholder="Items Gap" on:change="{changeItemsGap}" value="{gap}" />
-						<button class="uk-button uk-button-secondary" type="submit" on:click="{resetChart}">Reset</button>
+						<input
+							class="uk-input input-outer-radius"
+							type="text"
+							placeholder="Outer Radius"
+							on:change="{writeOuterRadius}"
+							on:input="{removeCharFromValue}"
+							value="{outerRadius}"
+						/>
+						<input
+							class="uk-input"
+							type="text"
+							placeholder="Inner Radius"
+							on:change="{writeInnerRadius}"
+							on:input="{removeCharFromValue}"
+							value="{innerRadius}"
+						/>
+						<input
+							class="uk-input"
+							type="text"
+							placeholder="Items Gap"
+							on:change="{changeItemsGap}"
+							on:input="{removeCharFromValue}"
+							value="{gap}"
+						/>
+						<button class="uk-button uk-button-secondary" type="submit" on:click="{resetChart}">
+							Reset
+						</button>
 					</div>
 					<div class="chart-items">
-						<h4 class="uk-heading-line header-set"><span>Chart Items ({itemsCount})</span></h4>
+						<h4 class="uk-heading-line header-set">
+							<span>Chart Items ({itemsCount})</span>
+						</h4>
 						<div class="chart-items-setting-buttons">
-							<button class="uk-button uk-button-primary" type="submit" on:click="{addNewChartItem}">Add item</button>
-							<button id="delete-all" class="uk-button uk-button-danger" type="submit" on:click="{deleteAllItems}" disabled>Delete all</button>
+							<button class="uk-button uk-button-primary" type="submit" on:click="{addNewChartItem}">
+								Add item
+							</button>
+							<button
+								id="delete-all"
+								class="uk-button uk-button-danger"
+								type="submit"
+								on:click="{deleteAllItems}"
+								disabled
+							>
+								Delete all
+							</button>
 						</div>
 						<div class="scroll-chart-items">
 							{#each chartItems as { id, value, fill }}
 							<div {id} class="chart-item">
-								<input class="uk-input" type="number" name="" placeholder="{value}" on:change="{writeNewValue}" />
-								<input class="uk-input color-input" type="color" name="col" value="{fill}" on:change="{changeItemColor}" />
-								<button class="uk-button uk-button-secondary" uk-icon="trash" type="submit" on:click="{removeChartItem}"></button>
+								<input
+									class="uk-input"
+									type="number"
+									name=""
+									placeholder="{value}"
+									on:change="{writeNewValue}"
+									on:input="{removeCharFromValue}"
+								/>
+								<input
+									class="uk-input color-input"
+									type="color"
+									name="col"
+									value="{fill}"
+									on:change="{changeItemColor}"
+								/>
+								<button
+									class="uk-button uk-button-secondary"
+									uk-icon="trash"
+									type="submit"
+									on:click="{removeChartItem}"
+								></button>
 							</div>
 							{/each}
 						</div>
@@ -446,5 +521,9 @@
 		display: grid;
 		grid-template-columns: 1fr 1fr;
 		column-gap: 12px;
+	}
+	.save-buttons {
+		display: grid;
+		grid-template-columns: 1fr 1fr;
 	}
 </style>
