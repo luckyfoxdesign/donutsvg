@@ -5,6 +5,7 @@
 	import UIkit from "uikit"
 	import Icons from "uikit/dist/js/uikit-icons"
 	import FileSave from "file-saver"
+	import Canvg, { presets } from "canvg"
 
 	UIkit.use(Icons)
 
@@ -12,12 +13,16 @@
 		innerRadius = 60,
 		gap = 0,
 		svgCodeParentBlock,
-		clr = "#8a54b2"
+		textArea,
+		clr = "#8a54b2",
+		chartImage
 
 	onMount(async () => {
 		svgCodeParentBlock = await document.querySelector(".svg-box").innerHTML
 	})
-	//var blob = new Blob([svgCode], { type: "image/svg+xml;charset=utf-8" })
+
+	$: blobSVG = new Blob([svgCodeParentBlock], { type: "image/svg+xml;charset=utf-8" })
+	//$: blobPNG = new Blob([chartImage], { type: "image/png" })
 
 	$: viewBoxSize = outerRadius * 2
 	$: viewBox = `0 0 ${viewBoxSize} ${viewBoxSize}`
@@ -43,9 +48,30 @@
 	$: chartItems = items
 	$: itemsCount = chartItems.length
 
-	function saveAsPNG(value) {
+	function onMountTextArea() {
+		textArea = document.querySelector("#svg-code")
+		textArea.focus()
+		textArea.select()
+	}
+
+	function saveAsSVG() {
 		console.log("eedc")
-		//FileSave.saveAs(blob, "hello world.svg")
+		FileSave.saveAs(blobSVG, "donut-chart.svg")
+	}
+
+	async function saveAsPNG() {
+		let parent = document.querySelector(".chart-settings")
+		let canvas = document.createElement("canvas")
+		svgCodeParentBlock = document.querySelector(".svg-box").innerHTML
+		parent.appendChild(canvas)
+		const ctx = canvas.getContext("2d")
+		let chartImage = await Canvg.from(ctx, svgCodeParentBlock)
+		chartImage.start()
+		canvas.toBlob((blob) => {
+			FileSave.saveAs(blob, "donut-chart.png")
+			chartImage.stop()
+			canvas.parentNode.removeChild(canvas)
+		})
 	}
 
 	function addNewChartItem() {
@@ -283,7 +309,7 @@
 	}
 
 	function copyToClipboard() {
-		copy(svgCode)
+		copy(svgCodeParentBlock)
 	}
 
 	function removeChartItem() {
@@ -315,12 +341,12 @@
 	function changeTab() {
 		let tab = fakeSvgTabsArr.find((e) => e.title === this.innerHTML)
 		if (tab.active != "uk-active") {
-			if (tab.title === "View Code") svgCodeParentBlock = document.querySelector(".svg-box").innerHTML
 			fakeSvgTabsArr.map((e) => {
 				if (e.title === this.innerHTML) e.active = "uk-active"
 				else e.active = ""
 			})
 			svgTabsArr = fakeSvgTabsArr
+			if (tab.title === "View Code") svgCodeParentBlock = document.querySelector(".svg-box").innerHTML
 		} else return
 	}
 </script>
@@ -341,24 +367,24 @@
 				<div class="svg-chart">
 					{#if svgTabsArr[0].active === "uk-active"}
 					<div id="code-copy" class="svg-box">
-						<svg xmlns="http://www.w3.org/2000/svg" width="{viewBoxSize}" height="{viewBoxSize}" {viewBox}>
+						<svg xmlns="http://www.w3.org/2000/svg" id="sv" width="{viewBoxSize}" height="{viewBoxSize}" {viewBox}>
 							{#each chartItems as { id, fill, d}}
 							<path {id} {fill} {d} />
 							{/each}
 						</svg>
 					</div>
 					{:else if svgTabsArr[1].active === "uk-active"}
-					<textarea name="" id="svg-code" class="uk-textarea" readonly>{svgCodeParentBlock}</textarea>
+					<textarea use:onMountTextArea id="svg-code" class="uk-textarea" readonly>{svgCodeParentBlock}</textarea>
 					{/if}
 				</div>
 				<div class="save-buttons">
 					<button class="uk-button uk-button-default" type="submit" on:click="{copyToClipboard}">
 						To clipboard
 					</button>
-					<button class="uk-button uk-button-default" type="submit">
+					<button class="uk-button uk-button-default" type="submit" on:click="{saveAsPNG}">
 						Save as PNG
 					</button>
-					<button class="uk-button uk-button-default" type="submit" on:click="{saveAsPNG}">
+					<button class="uk-button uk-button-default" type="submit" on:click="{saveAsSVG}">
 						Save as SVG
 					</button>
 				</div>
@@ -485,6 +511,7 @@
 	.svg-chart {
 		display: flex;
 		justify-content: center;
+		position: relative;
 		padding: 0 24px;
 		padding-bottom: 24px;
 		width: 440px;
@@ -547,5 +574,8 @@
 		background-color: #8a54b2;
 		opacity: 85%;
 		z-index: 999;
+	}
+	canvas {
+		position: absolute;
 	}
 </style>
