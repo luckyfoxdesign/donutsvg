@@ -4,21 +4,20 @@
 	import "../node_modules/uikit/dist/css/uikit.min.css"
 	import UIkit from "uikit"
 	import Icons from "uikit/dist/js/uikit-icons"
-
-	let clr = "#8a54b2"
+	import FileSave from "file-saver"
 
 	UIkit.use(Icons)
 
 	let outerRadius = 90,
 		innerRadius = 60,
-		gap = 0
-	let cc
-
-	$: svgCode = cc
+		gap = 0,
+		svgCodeParentBlock,
+		clr = "#8a54b2"
 
 	onMount(async () => {
-		cc = await document.getElementById("code-copy").innerHTML
+		svgCodeParentBlock = await document.querySelector(".svg-box").innerHTML
 	})
+	//var blob = new Blob([svgCode], { type: "image/svg+xml;charset=utf-8" })
 
 	$: viewBoxSize = outerRadius * 2
 	$: viewBox = `0 0 ${viewBoxSize} ${viewBoxSize}`
@@ -44,6 +43,11 @@
 	$: chartItems = items
 	$: itemsCount = chartItems.length
 
+	function saveAsPNG(value) {
+		console.log("eedc")
+		//FileSave.saveAs(blob, "hello world.svg")
+	}
+
 	function addNewChartItem() {
 		items.push({
 			id: 0,
@@ -56,7 +60,7 @@
 
 		writeAnglesAndPathsFakearr(returnItemsSumm())
 		chartItems = items
-		cc = document.getElementById("code-copy").innerHTML
+		svgCodeParentBlock = document.querySelector(".svg-box").innerHTML
 		document.getElementById("delete-all").disabled = false
 	}
 
@@ -311,6 +315,7 @@
 	function changeTab() {
 		let tab = fakeSvgTabsArr.find((e) => e.title === this.innerHTML)
 		if (tab.active != "uk-active") {
+			if (tab.title === "View Code") svgCodeParentBlock = document.querySelector(".svg-box").innerHTML
 			fakeSvgTabsArr.map((e) => {
 				if (e.title === this.innerHTML) e.active = "uk-active"
 				else e.active = ""
@@ -336,26 +341,32 @@
 				<div class="svg-chart">
 					{#if svgTabsArr[0].active === "uk-active"}
 					<div id="code-copy" class="svg-box">
-						<svg width="{viewBoxSize}" height="{viewBoxSize}" {viewBox}>
+						<svg xmlns="http://www.w3.org/2000/svg" width="{viewBoxSize}" height="{viewBoxSize}" {viewBox}>
 							{#each chartItems as { id, fill, d}}
 							<path {id} {fill} {d} />
 							{/each}
 						</svg>
 					</div>
-					{:else if fakeSvgTabsArr[1].active === "uk-active"}
-					<textarea name="" id="svg-code" class="uk-textarea" cols="30" rows="10">{svgCode}</textarea>
+					{:else if svgTabsArr[1].active === "uk-active"}
+					<textarea name="" id="svg-code" class="uk-textarea" readonly>{svgCodeParentBlock}</textarea>
 					{/if}
 				</div>
 				<div class="save-buttons">
 					<button class="uk-button uk-button-default" type="submit" on:click="{copyToClipboard}">
-						Copy to clipboard
+						To clipboard
 					</button>
 					<button class="uk-button uk-button-default" type="submit">
 						Save as PNG
 					</button>
+					<button class="uk-button uk-button-default" type="submit" on:click="{saveAsPNG}">
+						Save as SVG
+					</button>
 				</div>
 			</div>
 			<div class="chart-settings">
+				{#if svgTabsArr[1].active === "uk-active"}
+				<div class="chart-settings-overlay"></div>
+				{/if}
 				<div class="settings-container">
 					<h4 class="uk-heading-line header-set"><span>SVG Settings</span></h4>
 					<div class="svg-settings">
@@ -457,6 +468,7 @@
 	.chart-settings {
 		display: flex;
 		flex-direction: column;
+		position: relative;
 		width: 300px;
 		height: 490px;
 		padding: 24px;
@@ -524,6 +536,16 @@
 	}
 	.save-buttons {
 		display: grid;
-		grid-template-columns: 1fr 1fr;
+		grid-template-columns: 1fr 1fr 1fr;
+	}
+	.chart-settings-overlay {
+		position: absolute;
+		left: 0;
+		top: 0;
+		width: 100%;
+		height: 100%;
+		background-color: #8a54b2;
+		opacity: 85%;
+		z-index: 999;
 	}
 </style>
