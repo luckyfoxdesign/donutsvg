@@ -19,7 +19,7 @@ export default {
 		css({ output: "public/extra.css" }),
 		svelte({
 			// enable run-time checks when not in production
-			dev: production,
+			dev: !production,
 			// we'll extract any component CSS out into
 			// a separate file - better for performance
 			css: (css) => {
