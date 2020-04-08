@@ -22,7 +22,6 @@
 	})
 
 	$: blobSVG = new Blob([svgCodeParentBlock], { type: "image/svg+xml;charset=utf-8" })
-	//$: blobPNG = new Blob([chartImage], { type: "image/png" })
 
 	$: viewBoxSize = outerRadius * 2
 	$: viewBox = `0 0 ${viewBoxSize} ${viewBoxSize}`
@@ -75,19 +74,28 @@
 	}
 
 	function addNewChartItem() {
-		items.push({
-			id: 0,
-			fill: getHexStringColor(),
-			value: 360,
-			start: 0,
-			end: 0,
-			d: "",
-		})
+		if (items.length > 12) {
+			UIkit.notification({
+				message: "Chart items can't be more than 13",
+				status: "warning",
+				pos: "top-center",
+				timeout: 1000,
+			})
+		} else {
+			items.push({
+				id: 0,
+				fill: getHexStringColor(),
+				value: 360,
+				start: 0,
+				end: 0,
+				d: "",
+			})
 
-		writeAnglesAndPathsFakearr(returnItemsSumm())
-		chartItems = items
-		svgCodeParentBlock = document.querySelector(".svg-box").innerHTML
-		document.getElementById("delete-all").disabled = false
+			writeAnglesAndPathsFakearr(returnItemsSumm())
+			chartItems = items
+			svgCodeParentBlock = document.querySelector(".svg-box").innerHTML
+			document.getElementById("delete-all").disabled = false
+		}
 	}
 
 	function getHexStringColor() {
@@ -166,7 +174,21 @@
 					break
 				case ir > or:
 					console.log("ir>or or ir>199")
-					if (ir > 199) ir = 199
+					if (ir > 199) {
+						ir = 199
+						UIkit.notification({
+							message: "Inner radius can't be more than 199",
+							status: "warning",
+							pos: "top-center",
+							timeout: 1000,
+						})
+					}
+					UIkit.notification({
+						message: "Inner radius can't be more than outer radius",
+						status: "warning",
+						pos: "top-center",
+						timeout: 1000,
+					})
 					or = ir + 1
 					res({ or: or, ir: ir })
 					break
@@ -177,7 +199,21 @@
 					break
 				case ir == or:
 					console.log("ir==or")
-					if (ir > 199) ir = 199
+					UIkit.notification({
+						message: "Inner radius can't be equal to outer radius",
+						status: "warning",
+						pos: "top-center",
+						timeout: 1000,
+					})
+					if (ir > 199) {
+						ir = 199
+						UIkit.notification({
+							message: "Inner radius can't be more than 199",
+							status: "warning",
+							pos: "top-center",
+							timeout: 1000,
+						})
+					}
 					or = ir + 1
 					res({ or: or, ir: ir })
 					break
@@ -214,12 +250,24 @@
 					break
 				case or < ir:
 					console.log("or<ir")
+					UIkit.notification({
+						message: "Outer radius can't be less than 1",
+						status: "warning",
+						pos: "top-center",
+						timeout: 1000,
+					})
 					if (or < 1) or = 1
 					ir = or - 1
 					res({ or: or, ir: ir })
 					break
 				case or > 200:
 					console.log("or>200")
+					UIkit.notification({
+						message: "Outer radius can't be more than 200",
+						status: "warning",
+						pos: "top-center",
+						timeout: 1000,
+					})
 					or = 200
 					res({ or: or, ir: ir })
 					break
@@ -230,6 +278,12 @@
 					break
 				case or == ir:
 					console.log("or==ir")
+					UIkit.notification({
+						message: "Outer radius can't be equal to inner radius",
+						status: "warning",
+						pos: "top-center",
+						timeout: 1000,
+					})
 					ir = ir - 1
 					res({ or: or, ir: ir })
 					break
@@ -290,6 +344,17 @@
 					gp = 0
 					res(gp)
 					break
+				case gp > 10:
+					console.log("gap>10")
+					UIkit.notification({
+						message: "Gap can't be more than 10",
+						status: "warning",
+						pos: "top-center",
+						timeout: 1000,
+					})
+					gp = 10
+					res(gp)
+					break
 				case isNaN(gp):
 					console.log("gp=")
 					gp = 0
@@ -310,6 +375,12 @@
 
 	function copyToClipboard() {
 		copy(svgCodeParentBlock)
+		UIkit.notification({
+			message: "Copied to clipboard",
+			status: "primary",
+			pos: "top-center",
+			timeout: 1000,
+		})
 	}
 
 	function removeChartItem() {
@@ -354,7 +425,17 @@
 <main>
 	<div class="app">
 		<div class="image-block">
-			<img class="donut-logo" src="./img/donut.png" alt="" />
+			<div class="logo-box">
+				<img class="small-donut-1" width="140px" height="140px" src="./img/small-donut.png" alt="" />
+				<img class="small-donut-2" width="80px" height="80px" src="./img/small-donut.png" alt="" />
+				<img class="small-donut-3" width="180px" height="180px" src="./img/small-donut.png" alt="" />
+				<img class="small-donut-4" width="100px" height="1000px" src="./img/small-donut.png" alt="" />
+				<div class="logo-text">
+					<h1 class="site-name">Donut Pie chart</h1>
+					<h3 class="site-description">generator</h3>
+				</div>
+				<img class="donut-logo" src="./img/donut.png" alt="" />
+			</div>
 		</div>
 		<div class="app-container">
 			<div class="app-form">
@@ -479,7 +560,7 @@
 			</div>
 			<div class="footer-info">
 				<div class="footer-description">
-					Made by Lucky Fox Design. Fork me on:&nbsp
+					Fork me on:&nbsp
 					<a href="https://github.com/Luckyfoxdesign/donutsvg" target="_blank" rel="noopener noreferrer">Github</a>
 				</div>
 				<div class="footer-icons">
@@ -538,6 +619,17 @@
 	.image-block {
 		position: absolute;
 		width: 100%;
+		z-index: -1;
+	}
+	.logo-box {
+		display: flex;
+		justify-content: center;
+		position: absolute;
+		left: 0;
+		right: 0;
+		margin-left: auto;
+		margin-right: auto;
+		z-index: -1;
 	}
 	.donut-logo {
 		position: absolute;
@@ -545,7 +637,45 @@
 		right: 0;
 		margin-left: auto;
 		margin-right: auto;
-		z-index: -1;
+	}
+	.small-donut-1 {
+		position: absolute;
+		left: 5%;
+		top: 30%;
+	}
+	.small-donut-2 {
+		position: absolute;
+		left: 25.5%;
+		top: 130%;
+	}
+	.small-donut-3 {
+		position: absolute;
+		right: 10%;
+		top: -80%;
+	}
+	.small-donut-4 {
+		position: absolute;
+		right: 25%;
+		top: 200%;
+	}
+	h1,
+	h3 {
+		margin: 0;
+		font-weight: bold;
+	}
+	.logo-text {
+		text-align: center;
+		margin-right: 12px;
+	}
+	.site-name {
+		font-size: 19px;
+		margin-top: 80px;
+		color: #fc7a90;
+	}
+	.site-description {
+		font-size: 16px;
+		color: #f39d3f;
+		font-weight: normal;
 	}
 	.app-container {
 		display: flex;
