@@ -353,123 +353,171 @@
 
 <main>
 	<div class="app">
+		<div class="image-block">
+			<img class="donut-logo" src="./img/donut.png" alt="" />
+		</div>
 		<div class="app-container">
-			<div class="svg-container" style="--main-color: {clr}">
-				<div class="svg-tabs">
-					<ul uk-tab>
-						{#each svgTabsArr as {active, title}}
-						<li class="{active}">
-							<a href="" on:click="{changeTab}">{title}</a>
-						</li>
-						{/each}
-					</ul>
-				</div>
-				<div class="svg-chart">
-					{#if svgTabsArr[0].active === "uk-active"}
-					<div id="code-copy" class="svg-box">
-						<svg xmlns="http://www.w3.org/2000/svg" id="sv" width="{viewBoxSize}" height="{viewBoxSize}" {viewBox}>
-							{#each chartItems as { id, fill, d}}
-							<path {id} {fill} {d} />
+			<div class="app-form">
+				<div class="svg-container" style="--main-color: {clr}">
+					<div class="svg-tabs">
+						<ul uk-tab>
+							{#each svgTabsArr as {active, title}}
+							<li class="{active}">
+								<a href="" on:click="{changeTab}">{title}</a>
+							</li>
 							{/each}
-						</svg>
+						</ul>
 					</div>
-					{:else if svgTabsArr[1].active === "uk-active"}
-					<textarea use:onMountTextArea id="svg-code" class="uk-textarea" readonly>{svgCodeParentBlock}</textarea>
-					{/if}
-				</div>
-				<div class="save-buttons">
-					<button class="uk-button uk-button-default" type="submit" on:click="{copyToClipboard}">
-						To clipboard
-					</button>
-					<button class="uk-button uk-button-default" type="submit" on:click="{saveAsPNG}">
-						Save as PNG
-					</button>
-					<button class="uk-button uk-button-default" type="submit" on:click="{saveAsSVG}">
-						Save as SVG
-					</button>
-				</div>
-			</div>
-			<div class="chart-settings">
-				{#if svgTabsArr[1].active === "uk-active"}
-				<div class="chart-settings-overlay"></div>
-				{/if}
-				<div class="settings-container">
-					<h4 class="uk-heading-line header-set"><span>SVG Settings</span></h4>
-					<div class="svg-settings">
-						<input
-							class="uk-input input-outer-radius"
-							type="text"
-							placeholder="Outer Radius"
-							on:change="{writeOuterRadius}"
-							on:input="{removeCharFromValue}"
-							value="{outerRadius}"
-						/>
-						<input
-							class="uk-input"
-							type="text"
-							placeholder="Inner Radius"
-							on:change="{writeInnerRadius}"
-							on:input="{removeCharFromValue}"
-							value="{innerRadius}"
-						/>
-						<input
-							class="uk-input"
-							type="text"
-							placeholder="Items Gap"
-							on:change="{changeItemsGap}"
-							on:input="{removeCharFromValue}"
-							value="{gap}"
-						/>
-						<button class="uk-button uk-button-secondary" type="submit" on:click="{resetChart}">
-							Reset
+					<div class="svg-chart">
+						{#if svgTabsArr[0].active === "uk-active"}
+						<div id="code-copy" class="svg-box">
+							<svg xmlns="http://www.w3.org/2000/svg" id="sv" width="{viewBoxSize}" height="{viewBoxSize}" {viewBox}>
+								{#each chartItems as { id, fill, d}}
+								<path {id} {fill} {d} />
+								{/each}
+							</svg>
+						</div>
+						{:else if svgTabsArr[1].active === "uk-active"}
+						<textarea use:onMountTextArea id="svg-code" class="uk-textarea" readonly>{svgCodeParentBlock}</textarea>
+						{/if}
+					</div>
+					<div class="save-buttons">
+						<button class="uk-button uk-button-default" type="submit" on:click="{copyToClipboard}">
+							To clipboard
+						</button>
+						<button class="uk-button uk-button-default" type="submit" on:click="{saveAsPNG}">
+							Save as PNG
+						</button>
+						<button class="uk-button uk-button-default" type="submit" on:click="{saveAsSVG}">
+							Save as SVG
 						</button>
 					</div>
-					<div class="chart-items">
-						<h4 class="uk-heading-line header-set">
-							<span>Chart Items ({itemsCount})</span>
-						</h4>
-						<div class="chart-items-setting-buttons">
-							<button class="uk-button uk-button-primary" type="submit" on:click="{addNewChartItem}">
-								Add item
-							</button>
-							<button
-								id="delete-all"
-								class="uk-button uk-button-danger"
-								type="submit"
-								on:click="{deleteAllItems}"
-								disabled
-							>
-								Delete all
+				</div>
+				<div class="chart-settings">
+					{#if svgTabsArr[1].active === "uk-active"}
+					<div class="chart-settings-overlay"></div>
+					{/if}
+					<div class="settings-container">
+						<h4 class="uk-heading-line header-set"><span>SVG Settings</span></h4>
+						<div class="svg-settings">
+							<input
+								class="uk-input input-outer-radius"
+								type="text"
+								placeholder="Outer Radius"
+								on:change="{writeOuterRadius}"
+								on:input="{removeCharFromValue}"
+								value="{outerRadius}"
+							/>
+							<input
+								class="uk-input"
+								type="text"
+								placeholder="Inner Radius"
+								on:change="{writeInnerRadius}"
+								on:input="{removeCharFromValue}"
+								value="{innerRadius}"
+							/>
+							<input
+								class="uk-input"
+								type="text"
+								placeholder="Items Gap"
+								on:change="{changeItemsGap}"
+								on:input="{removeCharFromValue}"
+								value="{gap}"
+							/>
+							<button class="uk-button uk-button-secondary" type="submit" on:click="{resetChart}">
+								Reset
 							</button>
 						</div>
-						<div class="scroll-chart-items">
-							{#each chartItems as { id, value, fill }}
-							<div {id} class="chart-item">
-								<input
-									class="uk-input"
-									type="number"
-									name=""
-									placeholder="{value}"
-									on:change="{writeNewValue}"
-									on:input="{removeCharFromValue}"
-								/>
-								<input
-									class="uk-input color-input"
-									type="color"
-									name="col"
-									value="{fill}"
-									on:change="{changeItemColor}"
-								/>
+						<div class="chart-items">
+							<h4 class="uk-heading-line header-set">
+								<span>Chart Items ({itemsCount})</span>
+							</h4>
+							<div class="chart-items-setting-buttons">
+								<button class="uk-button uk-button-primary" type="submit" on:click="{addNewChartItem}">
+									Add item
+								</button>
 								<button
-									class="uk-button uk-button-secondary"
-									uk-icon="trash"
+									id="delete-all"
+									class="uk-button uk-button-danger"
 									type="submit"
-									on:click="{removeChartItem}"
-								></button>
+									on:click="{deleteAllItems}"
+									disabled
+								>
+									Delete all
+								</button>
 							</div>
-							{/each}
+							<div class="scroll-chart-items">
+								{#each chartItems as { id, value, fill }}
+								<div {id} class="chart-item">
+									<input
+										class="uk-input"
+										type="number"
+										name=""
+										placeholder="{value}"
+										on:change="{writeNewValue}"
+										on:input="{removeCharFromValue}"
+									/>
+									<input
+										class="uk-input color-input"
+										type="color"
+										name="col"
+										value="{fill}"
+										on:change="{changeItemColor}"
+									/>
+									<button
+										class="uk-button uk-button-secondary"
+										uk-icon="trash"
+										type="submit"
+										on:click="{removeChartItem}"
+									></button>
+								</div>
+								{/each}
+							</div>
 						</div>
 					</div>
+				</div>
+			</div>
+			<div class="footer-info">
+				<div class="footer-description">
+					Made by Lucky Fox Design. Fork me on:&nbsp
+					<a href="https://github.com/Luckyfoxdesign/donutsvg" target="_blank" rel="noopener noreferrer">Github</a>
+				</div>
+				<div class="footer-icons">
+					<ul class="social-icons">
+						<li>
+							<a
+								href="https://www.behance.net/luckyfoxdesign"
+								target="_blank"
+								rel="noopener noreferrer"
+								uk-icon="behance"
+							></a>
+						</li>
+						<li>
+							<a
+								href="https://dribbble.com/luckyfoxdesign"
+								target="_blank"
+								rel="noopener noreferrer"
+								uk-icon="dribbble"
+							></a>
+						</li>
+						<li>
+							<a
+								href="https://github.com/Luckyfoxdesign"
+								target="_blank"
+								rel="noopener noreferrer"
+								uk-icon="github"
+							></a>
+						</li>
+						<li>
+							<a
+								href="https://www.linkedin.com/in/maksim-sovenkov-b53770155/"
+								target="_blank"
+								rel="noopener noreferrer"
+								uk-icon="linkedin"
+							></a>
+						</li>
+						<li><a href="https://twitter.com/home" target="_blank" rel="noopener noreferrer" uk-icon="twitter"></a></li>
+					</ul>
 				</div>
 			</div>
 		</div>
@@ -483,13 +531,61 @@
 	.app {
 		display: flex;
 		justify-content: center;
+		position: relative;
 		width: 100vw;
 		height: 100vh;
 	}
+	.image-block {
+		position: absolute;
+		width: 100%;
+	}
+	.donut-logo {
+		position: absolute;
+		left: 0;
+		right: 0;
+		margin-left: auto;
+		margin-right: auto;
+		z-index: -1;
+	}
 	.app-container {
 		display: flex;
-		flex-direction: row;
+		flex-direction: column;
 		padding-top: 200px;
+	}
+	.app-form {
+		display: flex;
+		flex-direction: row;
+	}
+	ul {
+		list-style-type: none;
+		padding-left: 0;
+	}
+	li {
+		text-decoration: none;
+	}
+	ul > li {
+		display: inline-block;
+		*display: inline;
+	}
+	.footer-info {
+		display: flex;
+		flex-direction: column;
+		justify-content: center;
+	}
+	.footer-description {
+		display: flex;
+		justify-content: center;
+		margin-top: 16px;
+	}
+	.footer-icons {
+		display: flex;
+		justify-content: center;
+	}
+	.social-icons {
+		margin-top: 12px;
+	}
+	ul li:not(:last-child) {
+		padding-right: 8px;
 	}
 	.chart-settings {
 		display: flex;
