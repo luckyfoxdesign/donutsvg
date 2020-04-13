@@ -21,8 +21,6 @@
 		svgCodeParentBlock = await document.querySelector(".svg-box").innerHTML
 	})
 
-	$: blobSVG = new Blob([svgCodeParentBlock], { type: "image/svg+xml;charset=utf-8" })
-
 	$: viewBoxSize = outerRadius * 2
 	$: viewBox = `0 0 ${viewBoxSize} ${viewBoxSize}`
 
@@ -54,7 +52,8 @@
 	}
 
 	function saveAsSVG() {
-		console.log("eedc")
+		svgCodeParentBlock = document.querySelector(".svg-box").innerHTML
+		let blobSVG = new Blob([svgCodeParentBlock], { type: "image/svg+xml;charset=utf-8" })
 		FileSave.saveAs(blobSVG, "donut-chart.svg")
 	}
 
@@ -373,7 +372,13 @@
 		chartItems = items
 	}
 
+	//добавить тултипы на инпуты чтобы показать что за инпуты
+	//добавить обработку на пустое значение для инпутов данных
+	//при добавлении очередного item кажется логичным, что значение для этого нового item по умолчанию - 0, то есть когда поле добавлено, но значение еще не введено - новый участок дуги не добавляется; он появляется только тогда, когда введено значение в поле item
+	//всегда отображать скролл для айтемов (если их больше, чем может быть отображено одновременно в виджете)
+	//выводить сообщение об ошибке на области самого виджета
 	function copyToClipboard() {
+		svgCodeParentBlock = document.querySelector(".svg-box").innerHTML
 		copy(svgCodeParentBlock)
 		UIkit.notification({
 			message: "Copied to clipboard",
