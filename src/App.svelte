@@ -1,812 +1,200 @@
 <script>
 	import { onMount } from "svelte"
-	import copy from "copy-to-clipboard"
-	import "../node_modules/uikit/dist/css/uikit.min.css"
-	import UIkit from "uikit"
-	import Icons from "uikit/dist/js/uikit-icons"
-	import FileSave from "file-saver"
-	import Canvg, { presets } from "canvg"
+	import Button, { Label } from "@smui/button"
+	import { Icon as CommonIcon } from '@smui/common';
+	import IconButton from '@smui/icon-button';
+	import OuterRadius from "./components/OuterRadius.svelte";
+	import InnerRadius from "./components/InnerRadius.svelte";
+	import ExportPanel from "./components/ExportPanel.svelte";
+	import Gap from "./components/Gap.svelte";
+	import ChartItem from "./components/chart-items/ChartItem.svelte";
+	import { Radius, ChartItems, FakeChartItems } from './store.js'
+	import { computeChartArc, getHexStringColor, writeAnglesAndPathsFakearr } from './core/core.js'
 
-	UIkit.use(Icons)
+	let topShadow,
+		bottomShadow,
+		scrollView;
 
-	let outerRadius = 90,
-		innerRadius = 60,
-		gap = 0,
-		svgCodeParentBlock,
-		textArea,
-		clr = "#8a54b2",
-		chartImage
+	let options = {
+		root: scrollView,
+		rootMargin: '0px',
+		threshold: 1.0
+	}
 
 	onMount(async () => {
-		svgCodeParentBlock = await document.querySelector(".svg-box").innerHTML
+		scrollView = await document.querySelector(".app__data-scroll")
+		let zeroItem = await document.querySelector(".app__data-item--0")
+
+		await observeFirstChartItem(zeroItem)
 	})
 
-	$: viewBoxSize = outerRadius * 2
+	$: viewBoxSize = $Radius.outer * 2
 	$: viewBox = `0 0 ${viewBoxSize} ${viewBoxSize}`
 
-	let fakeSvgTabsArr = [
-		{ title: "SVG Chart", active: "uk-active" },
-		{ title: "View Code", active: "" },
-	]
+	$: $ChartItems = $FakeChartItems
 
-	$: svgTabsArr = fakeSvgTabsArr
-
-	let items = [
-		{
-			id: 0,
-			fill: "#cccccc",
-			value: 360,
-			start: 0,
-			end: 359.99,
-			d: arc(0, 359.99, outerRadius, innerRadius),
-		},
-	]
-
-	$: chartItems = items
-	$: itemsCount = chartItems.length
-
-	function onMountTextArea() {
-		textArea = document.querySelector("#svg-code")
-		textArea.focus()
-		textArea.select()
-	}
-
-	function saveAsSVG() {
-		svgCodeParentBlock = document.querySelector(".svg-box").innerHTML
-		let blobSVG = new Blob([svgCodeParentBlock], { type: "image/svg+xml;charset=utf-8" })
-		FileSave.saveAs(blobSVG, "donut-chart.svg")
-	}
-
-	async function saveAsPNG() {
-		let parent = document.querySelector(".chart-settings")
-		let canvas = document.createElement("canvas")
-		svgCodeParentBlock = document.querySelector(".svg-box").innerHTML
-		parent.appendChild(canvas)
-		const ctx = canvas.getContext("2d")
-		let chartImage = await Canvg.from(ctx, svgCodeParentBlock)
-		chartImage.start()
-		canvas.toBlob((blob) => {
-			FileSave.saveAs(blob, "donut-chart.png")
-			chartImage.stop()
-			canvas.parentNode.removeChild(canvas)
-		})
-	}
-
-	function addNewChartItem() {
-		if (items.length > 12) {
-			UIkit.notification({
-				message: "Chart items can't be more than 13",
-				status: "warning",
-				pos: "top-center",
-				timeout: 1000,
-			})
+	function addNewChartItem(e) {
+		if ($FakeChartItems.length > 11) {
+			return
 		} else {
-			items.push({
+			$FakeChartItems.push({
 				id: 0,
 				fill: getHexStringColor(),
-				value: 360,
+				value: Math.floor(Math.random() * (100 - 0 + 1)) + 0,
 				start: 0,
 				end: 0,
 				d: "",
 			})
 
-			writeAnglesAndPathsFakearr(returnItemsSumm())
-			chartItems = items
-			svgCodeParentBlock = document.querySelector(".svg-box").innerHTML
-			document.getElementById("delete-all").disabled = false
-		}
-	}
+			writeAnglesAndPathsFakearr($FakeChartItems, $Radius)
+			$ChartItems = $FakeChartItems
 
-	function getHexStringColor() {
-		return "#" + Math.floor(Math.random() * 16777215).toString(16)
-	}
-
-	function arc(sa, ea, or, ir) {
-		sa = (sa * Math.PI) / 180
-		ea = (ea * Math.PI) / 180
-		const sinAlpha = Math.sin(sa)
-		const cosAlpha = Math.cos(sa)
-		const sinBeta = Math.sin(ea)
-		const cosBeta = Math.cos(ea)
-
-		const largeArc = ea - sa > Math.PI
-
-		const P = {
-			x: or + or * sinAlpha,
-			y: or - or * cosAlpha,
+			setTimeout(() => {
+				document.querySelector(`.app__data-item--${$ChartItems.length - 1}`).scrollIntoView({ behavior: 'smooth', block: 'end' });
+			}, 50)
 		}
 
-		const Q = {
-			x: or + or * sinBeta,
-			y: or - or * cosBeta,
-		}
-
-		const R = {
-			x: or + ir * sinBeta,
-			y: or - ir * cosBeta,
-		}
-
-		const S = {
-			x: or + ir * sinAlpha,
-			y: or - ir * cosAlpha,
-		}
-
-		return `M${P.x}, ${P.y} A${or},${or} 0 ${largeArc ? "1" : "0"} 1 ${Q.x},${Q.y} L${R.x},${R.y} A${ir},${ir} 0 ${
-			largeArc ? "1" : "0"
-		} 0 ${S.x},${S.y} Z`
+		if ($FakeChartItems.length >= 7 && $FakeChartItems.length < 13) observeLastChartItem()
 	}
 
-	function writeInnerRadius() {
-		console.log(this.value)
-		innerRadius = parseInt(this.value)
-		validateInnerRadius(innerRadius, outerRadius).then((r) => {
-			console.log(r)
-			innerRadius = r.ir
-			outerRadius = r.or
-			items.map((e) => {
-				e.d = arc(e.start, e.end, outerRadius, innerRadius)
-			})
-			chartItems = items
-		})
+	function observeLastChartItem() {
+		setTimeout(() => {
+			let observerItem = document.querySelector(`.app__data-item--${$FakeChartItems.length - 1}`)
+			let observer = new IntersectionObserver((entries, observer) => {
+				for (let i = 1; i < $FakeChartItems.length - 1; i++) {
+					observer.unobserve(document.querySelector(`.app__data-item--${i}`))
+				}
+				handleScrollViewShadows(entries, "bottom", observerItem)
+			}, options)
+			observer.observe(observerItem);
+		}, 50)
 	}
 
-	function removeCharFromValue() {
-		let regex = /^\d+$/
-		let value = this.value
-		let onlyNumberStringValue = ""
-		value.split("").forEach((char) => {
-			if (regex.test(char)) onlyNumberStringValue += char
-			else return
-		})
-		this.value = onlyNumberStringValue
+	function observeFirstChartItem(item) {
+		let observer = new IntersectionObserver((entries, observer) => {
+			handleScrollViewShadows(entries, "top", item)
+		}, options)
+		observer.observe(item);
 	}
 
-	function validateInnerRadius(innerRadiusValue, outerRadiusValue) {
-		let or = outerRadiusValue
-		let ir = innerRadiusValue
-		return new Promise((res, rej) => {
-			switch (true) {
-				case isNaN(ir):
-					console.log("ir=")
-					ir = 0
-					res({ or: or, ir: ir })
-					break
-				case ir > or:
-					console.log("ir>or or ir>199")
-					if (ir > 199) {
-						ir = 199
-						UIkit.notification({
-							message: "Inner radius can't be more than 199",
-							status: "warning",
-							pos: "top-center",
-							timeout: 1000,
-						})
-					}
-					UIkit.notification({
-						message: "Inner radius can't be more than outer radius",
-						status: "warning",
-						pos: "top-center",
-						timeout: 1000,
-					})
-					or = ir + 1
-					res({ or: or, ir: ir })
-					break
-				case ir < 0:
-					console.log("ir < 0")
-					ir = 0
-					res({ or: or, ir: ir })
-					break
-				case ir == or:
-					console.log("ir==or")
-					UIkit.notification({
-						message: "Inner radius can't be equal to outer radius",
-						status: "warning",
-						pos: "top-center",
-						timeout: 1000,
-					})
-					if (ir > 199) {
-						ir = 199
-						UIkit.notification({
-							message: "Inner radius can't be more than 199",
-							status: "warning",
-							pos: "top-center",
-							timeout: 1000,
-						})
-					}
-					or = ir + 1
-					res({ or: or, ir: ir })
-					break
-				default:
-					res({ or: or, ir: ir })
-					break
-			}
-		})
-	}
-
-	function writeOuterRadius() {
-		console.log(parseInt(this.value))
-		outerRadius = parseInt(this.value)
-		validateOuterRadius(innerRadius, outerRadius).then((r) => {
-			console.log(r)
-			innerRadius = r.ir
-			outerRadius = r.or
-			items.map((e) => {
-				e.d = arc(e.start, e.end, outerRadius, innerRadius)
-			})
-			chartItems = items
-		})
-	}
-
-	function validateOuterRadius(innerRadiusValue, outerRadiusValue) {
-		let or = outerRadiusValue
-		let ir = innerRadiusValue
-		return new Promise((res, rej) => {
-			switch (true) {
-				case isNaN(or):
-					console.log("or=")
-					or = 1
-					res({ or: or, ir: ir })
-					break
-				case or < ir:
-					console.log("or<ir")
-					UIkit.notification({
-						message: "Outer radius can't be less than 1",
-						status: "warning",
-						pos: "top-center",
-						timeout: 1000,
-					})
-					if (or < 1) or = 1
-					ir = or - 1
-					res({ or: or, ir: ir })
-					break
-				case or > 200:
-					console.log("or>200")
-					UIkit.notification({
-						message: "Outer radius can't be more than 200",
-						status: "warning",
-						pos: "top-center",
-						timeout: 1000,
-					})
-					or = 200
-					res({ or: or, ir: ir })
-					break
-				case or <= 0:
-					console.log("or<=0")
-					or = 1
-					res({ or: or, ir: ir })
-					break
-				case or == ir:
-					console.log("or==ir")
-					UIkit.notification({
-						message: "Outer radius can't be equal to inner radius",
-						status: "warning",
-						pos: "top-center",
-						timeout: 1000,
-					})
-					ir = ir - 1
-					res({ or: or, ir: ir })
-					break
-				default:
-					res({ or: or, ir: ir })
-					break
-			}
-		})
-	}
-
-	function writeNewValue() {
-		items.find((e) => e.id == this.parentNode.id).value = parseInt(this.value)
-		writeAnglesAndPathsFakearr(returnItemsSumm())
-		chartItems = items
-	}
-
-	function returnItemsSumm() {
-		return items.reduce((r, s) => {
-			return r + s.value
-		}, 0)
-	}
-
-	//TODO херово считает через геп, получаются косые промежутки
-	function writeAnglesAndPathsFakearr(itemsArrSumm, en) {
-		let multiplier = !!!en ? 359.99 : 360
-		items.map((e, i) => {
-			e.id = i
-			let part = (e.value / itemsArrSumm) * multiplier
-			if (e.id != 0) {
-				e.start = items.find((f) => f.id == i - 1).end + gap
-				e.end = items.find((f) => f.id == i - 1).end + part
-				e.d = arc(e.start, e.end, outerRadius, innerRadius)
-			} else {
-				e.start = gap == 0 ? 0 : gap / 2
-				e.end = gap == 0 ? part : part - gap / 2
-				e.d = arc(e.start, e.end, outerRadius, innerRadius)
-			}
-		})
-	}
-
-	function changeItemsGap() {
-		gap = parseInt(this.value)
-		validateGap(gap).then((r) => {
-			gap = r
-			writeAnglesAndPathsFakearr(returnItemsSumm())
-			chartItems = items
-		})
-	}
-
-	// обработать у радиусов пустое значение
-
-	function validateGap(value) {
-		let gp = value
-		return new Promise((res, rej) => {
-			switch (true) {
-				case gp < 0:
-					console.log("gap<0")
-					gp = 0
-					res(gp)
-					break
-				case gp > 10:
-					console.log("gap>10")
-					UIkit.notification({
-						message: "Gap can't be more than 10",
-						status: "warning",
-						pos: "top-center",
-						timeout: 1000,
-					})
-					gp = 10
-					res(gp)
-					break
-				case isNaN(gp):
-					console.log("gp=")
-					gp = 0
-					res(gp)
-					break
-				default:
-					res(gp)
-					break
-			}
-		})
-	}
-
-	function changeItemColor() {
-		items.find((e) => e.id == this.parentNode.id).fill = this.value
-		writeAnglesAndPathsFakearr(returnItemsSumm())
-		chartItems = items
-	}
-
-	//добавить тултипы на инпуты чтобы показать что за инпуты
-	//добавить обработку на пустое значение для инпутов данных
-	//при добавлении очередного item кажется логичным, что значение для этого нового item по умолчанию - 0, то есть когда поле добавлено, но значение еще не введено - новый участок дуги не добавляется; он появляется только тогда, когда введено значение в поле item
-	//всегда отображать скролл для айтемов (если их больше, чем может быть отображено одновременно в виджете)
-	//выводить сообщение об ошибке на области самого виджета
-	function copyToClipboard() {
-		svgCodeParentBlock = document.querySelector(".svg-box").innerHTML
-		copy(svgCodeParentBlock)
-		UIkit.notification({
-			message: "Copied to clipboard",
-			status: "primary",
-			pos: "top-center",
-			timeout: 1000,
-		})
-	}
-
-	function removeChartItem() {
-		if (chartItems.length > 1) {
-			items.splice(this.parentNode.id, 1)
-			writeAnglesAndPathsFakearr(returnItemsSumm())
-			chartItems = items
-		}
-		if (chartItems.length < 2) {
-			document.getElementById("delete-all").disabled = true
-		}
+	function handleScrollViewShadows(entries, position, item) {
+		entries.forEach(entry => {
+			if (entry.isIntersecting && entry.intersectionRatio == 1) {
+				switch (position) {
+					case "top":
+						topShadow = false
+						break;
+					case "bottom":
+						bottomShadow = false
+						break;
+					default:
+						break;
+				}
+			} else if($ChartItems.length > 6) topShadow = true, bottomShadow = true
+		});
 	}
 
 	function resetChart() {
-		gap = 0
-		innerRadius = 60
-		outerRadius = 90
-		writeAnglesAndPathsFakearr(returnItemsSumm())
-		chartItems = items
+		$Radius.gap = 0
+		$Radius.inner = 60
+		$Radius.outer = 90
+		writeAnglesAndPathsFakearr($FakeChartItems, $Radius)
+		$ChartItems = $FakeChartItems
 	}
-	function deleteAllItems() {
-		if (chartItems.length > 1) {
-			items.splice(1)
-			writeAnglesAndPathsFakearr(returnItemsSumm())
-			chartItems = items
-			this.disabled = true
+
+	function deleteAllItems(e) {
+		if ($ChartItems.length > 1) {
+			topShadow = false
+			bottomShadow = false
+			$Radius.gap = 0
+			$FakeChartItems.splice(1)
+			writeAnglesAndPathsFakearr($FakeChartItems, $Radius)
+			$ChartItems = $FakeChartItems
 		}
-	}
-	function changeTab() {
-		let tab = fakeSvgTabsArr.find((e) => e.title === this.innerHTML)
-		if (tab.active != "uk-active") {
-			fakeSvgTabsArr.map((e) => {
-				if (e.title === this.innerHTML) e.active = "uk-active"
-				else e.active = ""
-			})
-			svgTabsArr = fakeSvgTabsArr
-			if (tab.title === "View Code") svgCodeParentBlock = document.querySelector(".svg-box").innerHTML
-		} else return
 	}
 </script>
 
 <main>
-	<div class="app">
-		<div class="image-block">
-			<div class="logo-box">
-				<img class="small-donut-1" width="140px" height="140px" src="./img/small-donut.png" alt="" />
-				<img class="small-donut-2" width="80px" height="80px" src="./img/small-donut.png" alt="" />
-				<img class="small-donut-3" width="180px" height="180px" src="./img/small-donut.png" alt="" />
-				<img class="small-donut-4" width="100px" height="1000px" src="./img/small-donut.png" alt="" />
-				<div class="logo-text">
-					<h1 class="site-name">Donut Pie chart</h1>
-					<h3 class="site-description">generator</h3>
-				</div>
-				<img class="donut-logo" src="./img/donut.png" alt="" />
+	<div class="app app_size">
+		<div class="app__container">
+			<div class="app__app-title app__app-title--params">
+				<div class="mdc-typography--headline4">Piedog</div>
+				<div class="mdc-typography--subtitle1">Generate pie or donut chart in svg/png</div>
 			</div>
-		</div>
-		<div class="app-container">
-			<div class="app-form">
-				<div class="svg-container" style="--main-color: {clr}">
-					<div class="svg-tabs">
-						<ul uk-tab>
-							{#each svgTabsArr as {active, title}}
-							<li class="{active}">
-								<a href="" on:click="{changeTab}">{title}</a>
-							</li>
-							{/each}
-						</ul>
+			<div class="app__form app__form--params">
+				<div class="app__chart app__chart--params">
+					<div class="app__chart-canvas pp__chart-canvas--params"></div>
+					<div class="app__chart-header app__chart-header--params">
+						<h4 class="mdc-typography--headline6">SVG Settings</h4>
+						{#if $Radius.gap === 0 && $Radius.inner === 60 && $Radius.outer === 90}
+						<Button class="app__chart-reset" disabled>
+							<Label>Reset</Label>
+						</Button>
+						{:else}
+						<Button class="app__chart-reset" on:click="{(e) => resetChart(e)}">
+							<Label>Reset</Label>
+						</Button>
+						{/if}
 					</div>
-					<div class="svg-chart">
-						{#if svgTabsArr[0].active === "uk-active"}
-						<div id="code-copy" class="svg-box">
+					<div class="app__chart-settings">
+						<OuterRadius />
+						<InnerRadius />
+						{#if $FakeChartItems.length >1 }
+							<Gap />
+						{:else}
+							<Gap disabled/>
+						{/if}
+					</div>
+					<div class="app__chart-svg app__chart-svg--params">
+						<div id="code-copy">
 							<svg xmlns="http://www.w3.org/2000/svg" id="sv" width="{viewBoxSize}" height="{viewBoxSize}" {viewBox}>
-								{#each chartItems as { id, fill, d}}
-								<path {id} {fill} {d} />
+								{#each $ChartItems as { id, fill, d}}
+									<path {id} {fill} {d} />
 								{/each}
 							</svg>
 						</div>
-						{:else if svgTabsArr[1].active === "uk-active"}
-						<textarea use:onMountTextArea id="svg-code" class="uk-textarea" readonly>{svgCodeParentBlock}</textarea>
-						{/if}
 					</div>
-					<div class="save-buttons">
-						<button class="uk-button uk-button-default" type="submit" on:click="{copyToClipboard}">
-							To clipboard
-						</button>
-						<button class="uk-button uk-button-default" type="submit" on:click="{saveAsPNG}">
-							Save as PNG
-						</button>
-						<button class="uk-button uk-button-default" type="submit" on:click="{saveAsSVG}">
-							Save as SVG
-						</button>
+					<div class="app__chart-export app__chart-export--params">
+					<ExportPanel/>
 					</div>
 				</div>
-				<div class="chart-settings">
-					{#if svgTabsArr[1].active === "uk-active"}
-					<div class="chart-settings-overlay"></div>
-					{/if}
-					<div class="settings-container">
-						<h4 class="uk-heading-line header-set"><span>SVG Settings</span></h4>
-						<div class="svg-settings">
-							<input
-								class="uk-input input-outer-radius"
-								type="text"
-								placeholder="Outer Radius"
-								on:change="{writeOuterRadius}"
-								on:input="{removeCharFromValue}"
-								value="{outerRadius}"
-							/>
-							<input
-								class="uk-input"
-								type="text"
-								placeholder="Inner Radius"
-								on:change="{writeInnerRadius}"
-								on:input="{removeCharFromValue}"
-								value="{innerRadius}"
-							/>
-							<input
-								class="uk-input"
-								type="text"
-								placeholder="Items Gap"
-								on:change="{changeItemsGap}"
-								on:input="{removeCharFromValue}"
-								value="{gap}"
-							/>
-							<button class="uk-button uk-button-secondary" type="submit" on:click="{resetChart}">
-								Reset
-							</button>
+				<div class="app__data app__data--params">
+					<div class="app__data-header">
+						<h4 class="mdc-typography--headline6 mdc-typography--itemsheadline">
+							<span>Chart Items ({$ChartItems.length})</span>
+						</h4>
+						<div class="app__data-buttons app__data-buttons--params">
+							<Button class="" type="submit" on:click="{(e) => addNewChartItem(e)}" variant="unelevated">
+								<CommonIcon class="material-icons">add</CommonIcon><Label>Add new item</Label>
+							</Button>
+							{#if $ChartItems.length < 2}
+							<Button disabled>
+								<Label>Delete all</Label>
+							</Button>
+							{:else}
+							<Button on:click="{(e) => deleteAllItems(e)}">
+								<Label>Delete all</Label>
+							</Button>
+							{/if}
 						</div>
-						<div class="chart-items">
-							<h4 class="uk-heading-line header-set">
-								<span>Chart Items ({itemsCount})</span>
-							</h4>
-							<div class="chart-items-setting-buttons">
-								<button class="uk-button uk-button-primary" type="submit" on:click="{addNewChartItem}">
-									Add item
-								</button>
-								<button
-									id="delete-all"
-									class="uk-button uk-button-danger"
-									type="submit"
-									on:click="{deleteAllItems}"
-									disabled
-								>
-									Delete all
-								</button>
-							</div>
-							<div class="scroll-chart-items">
-								{#each chartItems as { id, value, fill }}
-								<div {id} class="chart-item">
-									<input
-										class="uk-input"
-										type="number"
-										name=""
-										placeholder="{value}"
-										on:change="{writeNewValue}"
-										on:input="{removeCharFromValue}"
-									/>
-									<input
-										class="uk-input color-input"
-										type="color"
-										name="col"
-										value="{fill}"
-										on:change="{changeItemColor}"
-									/>
-									<button
-										class="uk-button uk-button-secondary"
-										uk-icon="trash"
-										type="submit"
-										on:click="{removeChartItem}"
-									></button>
-								</div>
+						<div class="app__data-scroll-withshadows">
+							{#if topShadow}
+								<div class="app__data-scroll-shadowtop app__data-scroll-shadowtop--params"></div>
+							{/if}
+							{#if bottomShadow}
+								<div class="app__data-scroll-shadowbottom app__data-scroll-shadowbottom--params"></div>
+							{/if}
+							<div class="app__data-scroll app__data-scroll--params">
+								{#each $ChartItems as { id, value, fill }}
+									<ChartItem {id} {value} {fill}</>
 								{/each}
 							</div>
 						</div>
 					</div>
-				</div>
-			</div>
-			<div class="footer-info">
-				<div class="footer-description">
-					Fork me on:&nbsp
-					<a href="https://github.com/Luckyfoxdesign/donutsvg" target="_blank" rel="noopener noreferrer">Github</a>
-				</div>
-				<div class="footer-icons">
-					<ul class="social-icons">
-						<li>
-							<a
-								href="https://www.behance.net/luckyfoxdesign"
-								target="_blank"
-								rel="noopener noreferrer"
-								uk-icon="behance"
-							></a>
-						</li>
-						<li>
-							<a
-								href="https://dribbble.com/luckyfoxdesign"
-								target="_blank"
-								rel="noopener noreferrer"
-								uk-icon="dribbble"
-							></a>
-						</li>
-						<li>
-							<a
-								href="https://github.com/Luckyfoxdesign"
-								target="_blank"
-								rel="noopener noreferrer"
-								uk-icon="github"
-							></a>
-						</li>
-						<li>
-							<a
-								href="https://www.linkedin.com/in/maksim-sovenkov-b53770155/"
-								target="_blank"
-								rel="noopener noreferrer"
-								uk-icon="linkedin"
-							></a>
-						</li>
-						<li><a href="https://twitter.com/home" target="_blank" rel="noopener noreferrer" uk-icon="twitter"></a></li>
-					</ul>
 				</div>
 			</div>
 		</div>
 	</div>
 </main>
 
-<style>
-	.uk-textarea {
-		resize: none;
-	}
-	.app {
-		display: flex;
-		justify-content: center;
-		position: relative;
-		width: 100vw;
-		height: 100vh;
-	}
-	.image-block {
-		position: absolute;
-		width: 100%;
-		z-index: -1;
-	}
-	.logo-box {
-		display: flex;
-		justify-content: center;
-		position: absolute;
-		left: 0;
-		right: 0;
-		margin-left: auto;
-		margin-right: auto;
-		z-index: -1;
-	}
-	.donut-logo {
-		position: absolute;
-		left: 0;
-		right: 0;
-		margin-left: auto;
-		margin-right: auto;
-	}
-	.small-donut-1 {
-		position: absolute;
-		left: 5%;
-		top: 30%;
-	}
-	.small-donut-2 {
-		position: absolute;
-		left: 25.5%;
-		top: 130%;
-	}
-	.small-donut-3 {
-		position: absolute;
-		right: 10%;
-		top: -80%;
-	}
-	.small-donut-4 {
-		position: absolute;
-		right: 25%;
-		top: 200%;
-	}
-	h1,
-	h3 {
-		margin: 0;
-		font-weight: bold;
-	}
-	.logo-text {
-		text-align: center;
-		margin-right: 12px;
-	}
-	.site-name {
-		font-size: 19px;
-		margin-top: 80px;
-		color: #fc7a90;
-	}
-	.site-description {
-		font-size: 16px;
-		color: #f39d3f;
-		font-weight: normal;
-	}
-	.app-container {
-		display: flex;
-		flex-direction: column;
-		padding-top: 200px;
-	}
-	.app-form {
-		display: flex;
-		flex-direction: row;
-	}
-	ul {
-		list-style-type: none;
-		padding-left: 0;
-	}
-	li {
-		text-decoration: none;
-	}
-	ul > li {
-		display: inline-block;
-		*display: inline;
-	}
-	.footer-info {
-		display: flex;
-		flex-direction: column;
-		justify-content: center;
-	}
-	.footer-description {
-		display: flex;
-		justify-content: center;
-		margin-top: 16px;
-	}
-	.footer-icons {
-		display: flex;
-		justify-content: center;
-	}
-	.social-icons {
-		margin-top: 12px;
-	}
-	ul li:not(:last-child) {
-		padding-right: 8px;
-	}
-	.chart-settings {
-		display: flex;
-		flex-direction: column;
-		position: relative;
-		width: 300px;
-		height: 490px;
-		padding: 24px;
-		background-color: #8a54b2;
-	}
-	.svg-settings {
-		display: grid;
-		grid-template-columns: 1fr 1fr;
-		grid-template-rows: auto;
-		column-gap: 16px;
-		row-gap: 16px;
-		padding-bottom: 24px;
-	}
-	.svg-chart {
-		display: flex;
-		justify-content: center;
-		position: relative;
-		padding: 0 24px;
-		padding-bottom: 24px;
-		width: 440px;
-		height: 466px;
-	}
-	.svg-tabs {
-		margin-top: 20px;
-	}
-	.scroll-chart-items {
-		display: flex;
-		flex-direction: column;
-		overflow-y: auto;
-		height: 220px;
-		margin-top: 16px;
-	}
-	.svg-container {
-		display: flex;
-		justify-content: flex-start;
-		flex-direction: column;
-		width: 488px;
-		height: 536px;
-		border: 1px solid var(--main-color);
-		background-color: #ffffff;
-	}
-	.chart-items {
-		display: flex;
-		flex-direction: column;
-	}
-	.chart-item {
-		display: grid;
-		grid-template-columns: 1fr 1fr 1fr;
-		column-gap: 4px;
-	}
-	.svg-box {
-		display: flex;
-		justify-content: center;
-		align-items: center;
-	}
-	.chart-item:not(:first-child) {
-		margin-top: 16px;
-	}
-	.header-set {
-		color: #ffffff;
-	}
-	.chart-items-setting-buttons {
-		display: grid;
-		grid-template-columns: 1fr 1fr;
-		column-gap: 12px;
-	}
-	.save-buttons {
-		display: grid;
-		grid-template-columns: 1fr 1fr 1fr;
-	}
-	.chart-settings-overlay {
-		position: absolute;
-		left: 0;
-		top: 0;
-		width: 100%;
-		height: 100%;
-		background-color: #8a54b2;
-		opacity: 85%;
-		z-index: 999;
-	}
-	canvas {
-		position: absolute;
-	}
-</style>
+<style></style>

@@ -1,0 +1,155 @@
+// Import the typography styles.
+//
+// MDC Typography
+//
+@import "@material/typography/mdc-typography";
+
+.app {
+	position: relative;
+	&__form {
+		display: flex;
+		flex-direction: row;
+		&--params {
+			padding-top: 32px;
+		}
+	}
+	&__app-title--params {
+		padding-bottom: 24px;
+		border-bottom: 1px solid #cccccc;
+	}
+	&__chart {
+		display: flex;
+		flex-direction: column;
+		position: relative;
+		&--params {
+			padding-right: 24px;
+		}
+		&-canvas {
+			&--params {
+				position: absolute;
+				top: -9999;
+				left: -9999;
+			}
+		}
+		&-header {
+			display: flex;
+			flex-direction: row;
+			align-items: center;
+			&--params {
+				margin-bottom: 8px;
+			}
+		}
+		&-svg {
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			&--params {
+				width: 100%;
+				height: 100%;
+			}
+		}
+		&-settings {
+			display: grid;
+			grid-template-columns: repeat(3, 140px);
+			column-gap: 12px;
+		}
+		&-export {
+			display: flex;
+			flex-direction: row;
+			justify-content: flex-end;
+			&--params {
+				padding-top: 16px;
+				border-top: 1px solid #cccccc;
+			}
+		}
+		&-clipboard {
+			&--params {
+				margin-right: 16px;
+			}
+		}
+		&-saveas {
+			&--params {
+				padding-left: 16px;
+				border-left: 1px solid #cccccc;
+			}
+		}
+	}
+	&__data {
+		&--params {
+			padding-left: 24px;
+			border-left: 1px solid #cccccc;
+		}
+		&-scroll {
+			display: flex;
+			flex-direction: column;
+			align-items: flex-start;
+			overflow-y: auto;
+			overflow-x: hidden;
+			&--params {
+				height: 450px;
+				width: 352px;
+				padding-top: 16px;
+			}
+			&-withshadows {
+				position: relative;
+			}
+			&-shadowtop {
+				position: absolute;
+				&--params {
+					width: 100%;
+					height: 8px;
+					left: 0;
+					top: 0;
+					background: linear-gradient(180deg, rgba(102, 102, 102, 0.25) 0%, rgba(102, 102, 102, 0) 100%);
+				}
+			}
+			&-shadowbottom {
+				position: absolute;
+				&--params {
+					width: 100%;
+					height: 8px;
+					bottom: 0;
+					left: 0;
+					background: linear-gradient(0deg, rgba(102, 102, 102, 0.25) 0%, rgba(102, 102, 102, 0) 100%);
+				}
+			}
+		}
+		&-buttons {
+			display: grid;
+			grid-template-columns: 1fr 1fr;
+			column-gap: 12px;
+			&--params {
+				padding-bottom: 24px;
+				border-bottom: 1px solid #cccccc;
+			}
+		}
+		&-item {
+			display: grid;
+			align-items: center;
+			grid-template-columns: repeat(2, 1fr) auto;
+			column-gap: 12px;
+		}
+	}
+}
+
+.mdc-typography {
+	&--headline6 {
+		margin-right: auto;
+		margin-top: 0;
+		margin-bottom: 0;
+	}
+	&--headline4 {
+		margin-bottom: 4px;
+	}
+	&--itemsheadline {
+		margin-bottom: 16px;
+	}
+}
+
+.app_size {
+	width: 100vw;
+	height: 100vh;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
