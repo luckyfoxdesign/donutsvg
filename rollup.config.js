@@ -3,6 +3,8 @@ import resolve from "rollup-plugin-node-resolve"
 import commonjs from "rollup-plugin-commonjs"
 import postcss from "rollup-plugin-postcss"
 import livereload from "rollup-plugin-livereload"
+import { terser } from "rollup-plugin-terser"
+import replace from "rollup-plugin-replace"
 
 const production = !process.env.ROLLUP_WATCH
 
@@ -15,6 +17,9 @@ module.exports = {
 		name: "app",
 	},
 	plugins: [
+		// replace({
+		// 	PRODUCTION: process.env.NODE_ENV === "production",
+		// }),
 		svelte({
 			emitCss: true,
 		}),

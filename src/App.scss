@@ -17,6 +17,23 @@
 		padding-bottom: 24px;
 		border-bottom: 1px solid #cccccc;
 	}
+	&__app-description {
+		display: flex;
+		flex-direction: row;
+		justify-content: space-between;
+	}
+	&__social {
+		&--params {
+			display: flex;
+			justify-content: center;
+		}
+		&-icons {
+			display: grid;
+			grid-template-columns: repeat(5, auto);
+			grid-template-rows: 1fr;
+			column-gap: 16px;
+		}
+	}
 	&__chart {
 		display: flex;
 		flex-direction: column;

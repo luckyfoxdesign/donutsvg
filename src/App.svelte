@@ -114,12 +114,41 @@
 	}
 </script>
 
+<svelte:head>
+	<!-- Yandex.Metrika counter -->
+<script type="text/javascript" >
+	(function(m,e,t,r,i,k,a){m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};
+	m[i].l=1*new Date();k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)})
+	(window, document, "script", "https://mc.yandex.ru/metrika/tag.js", "ym");
+
+	ym(61801633, "init", {
+			 clickmap:true,
+			 trackLinks:true,
+			 accurateTrackBounce:true,
+			 webvisor:true
+	});
+</script>
+<noscript><div><img src="https://mc.yandex.ru/watch/61801633" style="position:absolute; left:-9999px;" alt="" /></div></noscript>
+<!-- /Yandex.Metrika counter -->
+</svelte:head>
+
 <main>
 	<div class="app app_size">
 		<div class="app__container">
 			<div class="app__app-title app__app-title--params">
 				<div class="mdc-typography--headline4">Piedog</div>
-				<div class="mdc-typography--subtitle1">Generate pie or donut chart in svg/png</div>
+				<div class="app__app-description">
+					<div class="mdc-typography--subtitle1">Generate pie or donut chart in svg/png</div>
+					<div class="app__social app__social--params">
+						<div class="app__social-icons">
+							<a class="mdc-typography--subtitle1" href="https://twitter.com/luckyfoxdesign" target="_blank" rel="noopener noreferrer">Twitter</a>
+							<a class="mdc-typography--subtitle1" href="https://www.linkedin.com/in/maksim-sovenkov-b53770155/" target="_blank" rel="noopener noreferrer">LinkedIn</a>
+							<a class="mdc-typography--subtitle1" href="https://www.behance.net/luckyfoxdesign" target="_blank" rel="noopener noreferrer">Behance</a>
+							<a class="mdc-typography--subtitle1" href="https://github.com/Luckyfoxdesign/donutsvg" target="_blank" rel="noopener noreferrer">Github</a>
+							<a class="mdc-typography--subtitle1" href="mailto:luckyfoxdesign@yandex.ru">Email</a>
+						</div>
+					</div>
+				</div>
 			</div>
 			<div class="app__form app__form--params">
 				<div class="app__chart app__chart--params">
