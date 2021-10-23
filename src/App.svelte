@@ -197,7 +197,7 @@
 							{/if}
 							<div class="app__data-scroll app__data-scroll--params">
 								{#each $ChartItems as { id, value, fill }}
-									<ChartItem {id} {value} {fill}</>
+									<ChartItem {id} {value} {fill}/>
 								{/each}
 							</div>
 						</div>

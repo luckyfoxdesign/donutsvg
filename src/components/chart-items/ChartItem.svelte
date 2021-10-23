@@ -18,7 +18,7 @@
 </script>
 
 <div {id} class="app__data-item app__data-item--{id}">
-  <ValueInput {id} {value}< />
+  <ValueInput {id} {value}/>
   <ColorInput {fill} />
   {#if $ChartItems.length > 1}
     <IconButton class="material-icons" on:click="{(e) => removeChartItem(e)}">delete_forever</IconButton>

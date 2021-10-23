@@ -3,8 +3,6 @@ node_modules/
 DS_Store
 .code-workspace
 public/build
-rollup.config.js2
-rollup.config.js1
 .nowignore
 now.json
 public/robots.txt
