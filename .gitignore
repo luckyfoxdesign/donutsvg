@@ -1,8 +1,7 @@
-.now
 node_modules/
 DS_Store
 .code-workspace
 public/build
-.nowignore
-now.json
 public/robots.txt
+.vercelignore
+.vercel

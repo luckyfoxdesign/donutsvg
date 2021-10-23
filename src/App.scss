@@ -164,9 +164,14 @@
 }
 
 .app_size {
-	width: 100vw;
-	height: 100vh;
 	display: flex;
-	justify-content: center;
 	align-items: center;
+	padding-top: 32px;
+	padding-left: 32px;
+	padding-right: 32px;
+}
+
+.app__container {
+	margin-left: 32px;
+	margin-right: 32px;
 }
