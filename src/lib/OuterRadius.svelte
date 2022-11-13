@@ -1,13 +1,13 @@
 <script>
-	import HelperText from "@smui/textfield/helper-text/index"
-	import Textfield, { Input, Textarea } from "@smui/textfield"
+	import HelperText from "@smui/textfield/helper-text"
+	import Textfield from "@smui/textfield"
 	import { computeChartArc, formatToNumberType } from "../core/core.js"
 	import { Radius, ChartItems, FakeChartItems } from "../store.js"
 
 	function writeOuterRadius(e) {
 		let value = parseInt(e.target.value)
 		formatOuterRadius($Radius.inner, value).then((r) => {
-			console.log(r)
+			//console.log(r)
 			$Radius.inner = r.ir
 			$Radius.outer = r.or
 			$FakeChartItems.map((e) => {
@@ -23,28 +23,28 @@
 		return new Promise((res, rej) => {
 			switch (true) {
 				case isNaN(or):
-					console.log("or=")
+					//console.log("or=")
 					or = 1
 					res({ or: or, ir: ir })
 					break
 				case or < ir:
-					console.log("or<ir")
+					//console.log("or<ir")
 					if (or < 1) or = 1
 					ir = or - 1
 					res({ or: or, ir: ir })
 					break
 				case or > 150:
-					console.log("or>150")
+					//console.log("or>150")
 					or = 150
 					res({ or: or, ir: ir })
 					break
 				case or <= 0:
-					console.log("or<=0")
+					//console.log("or<=0")
 					or = 1
 					res({ or: or, ir: ir })
 					break
 				case or == ir:
-					console.log("or==ir")
+					//console.log("or==ir")
 					ir = ir - 1
 					res({ or: or, ir: ir })
 					break

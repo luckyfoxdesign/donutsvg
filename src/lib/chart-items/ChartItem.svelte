@@ -1,7 +1,6 @@
 <script>
   import ColorInput from "./ColorInput.svelte";
   import ValueInput from "./ValueInput.svelte";
-  import { Icon as CommonIcon } from '@smui/common';
   import IconButton from '@smui/icon-button';
   import { Radius, ChartItems, FakeChartItems } from "../../store.js"
   import { writeAnglesAndPathsFakearr } from "../../core/core.js"

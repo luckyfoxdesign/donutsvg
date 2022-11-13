@@ -7,7 +7,7 @@ export const FakeChartItems = writable([
 	{
 		id: 0,
 		fill: "#cccccc",
-		value: 34,
+		value: 50,
 		start: 0,
 		end: 359.99,
 		d: computeChartArc(0, 359.99, 90, 60),

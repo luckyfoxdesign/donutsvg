@@ -1,8 +1,3 @@
-# Need help
-
-I have trouble with upgrading SMUI to the latest version. </br>
-Need help with that.
-
 # SVG Pie and Donut chart generator
 
 Based on [Svelte](https://github.com/sveltejs/svelte) and [Svelte material](https://github.com/hperrin/svelte-material-ui)
