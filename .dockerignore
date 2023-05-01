@@ -1,0 +1,12 @@
+# Ignore files and directories commonly excluded in Node.js projects
+node_modules
+npm-debug.log
+
+# Ignore editor and environment files
+.vscode
+.idea
+*.iml
+
+# Ignore build artifacts
+build
+dist
