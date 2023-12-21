@@ -2,7 +2,7 @@ version: '3.8'
 
 services:
   s_svelteapp:
-    image: node:current-alpine3.17
+    image: node:18-alpine3.18
     container_name: c_donutsvg
     ports:
       - 3000:3000
