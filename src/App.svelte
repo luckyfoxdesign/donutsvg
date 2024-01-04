@@ -122,7 +122,7 @@
 	<div class="app app_size">
 		<div class="app__container">
 			<div class="app__app-title app__app-title--params">
-				<div class="mdc-typography--headline4">Piedog</div>
+				<div class="mdc-typography--headline4">Piedog <a href="https://forms.gle/6owsZ9sS5Rf7Baw28" style="color: red; font-weight: 700;" target="_blank">Participate in Our Quick Survey to Enhance the Tool!</a> </div>
 				<div class="app__app-description">
 					<div class="mdc-typography--subtitle1">
 						Generate pie or donut chart in svg/png
