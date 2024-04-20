@@ -10,21 +10,27 @@
   },
   "devDependencies": {
     "@material/typography": "^14.0.0",
-    "@smui/button": "^7.0.0-beta.15",
-    "@smui/icon-button": "^7.0.0-beta.15",
-    "@smui/list": "^7.0.0-beta.15",
-    "@smui/menu": "^7.0.0-beta.15",
-    "@smui/menu-surface": "^7.0.0-beta.15",
-    "@smui/snackbar": "^7.0.0-beta.15",
-    "@smui/textfield": "^7.0.0-beta.15",
-    "@sveltejs/vite-plugin-svelte": "^2.4.6",
+    "@smui/button": "^7.0.0-beta.18",
+    "@smui/icon-button": "^7.0.0-beta.18",
+    "@smui/list": "^7.0.0-beta.18",
+    "@smui/menu": "^7.0.0-beta.18",
+    "@smui/menu-surface": "^7.0.0-beta.18",
+    "@smui/paper": "^7.0.0-beta.18",
+    "@smui/snackbar": "^7.0.0-beta.18",
+    "@smui/tab": "^7.0.0-beta.18",
+    "@smui/tab-bar": "^7.0.0-beta.18",
+    "@smui/textfield": "^7.0.0-beta.18",
+    "@sveltejs/vite-plugin-svelte": "^3.1.0",
+    "autoprefixer": "^10.4.19",
+    "postcss": "^8.4.38",
     "svelte": "^4.2.8",
-    "vite": "^4.4.12"
+    "tailwindcss": "^3.4.3",
+    "vite": "^5.2.10"
   },
   "dependencies": {
     "canvg": "^4.0.1",
     "copy-to-clipboard": "^3.3.3",
     "file-saver": "^2.0.5",
-    "svelte-material-ui": "^7.0.0-beta.15"
+    "svelte-material-ui": "^7.0.0-beta.18"
   }
 }

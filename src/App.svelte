@@ -1,7 +1,10 @@
 <script>
 	import { onMount } from "svelte";
 	import Button, { Label } from "@smui/button";
+	import Tab from '@smui/tab';
+  	import TabBar from '@smui/tab-bar';
 	import { Icon } from "@smui/icon-button";
+	import Paper, { Content } from '@smui/paper';
 	import OuterRadius from "./lib/OuterRadius.svelte";
 	import InnerRadius from "./lib/InnerRadius.svelte";
 	import ExportPanel from "./lib/ExportPanel.svelte";
@@ -21,6 +24,8 @@
 		rootMargin: "0px",
 		threshold: 1.0,
 	};
+
+	let active = 'Donut/Pie';
 
 	onMount(async () => {
 		scrollView = await document.querySelector(".app__data-scroll");
@@ -161,104 +166,130 @@
 					</div>
 				</div>
 			</div>
-			<div class="app__form app__form--params">
-				<div class="app__chart app__chart--params">
-					<div class="app__chart-canvas pp__chart-canvas--params" />
-					<div class="app__chart-header app__chart-header--params">
-						<h4 class="mdc-typography--headline6">SVG Settings</h4>
-						{#if $Radius.gap === 0 && $Radius.inner === 60 && $Radius.outer === 90}
-							<Button class="app__chart-reset" disabled>
-								<Label>Reset</Label>
-							</Button>
-						{:else}
-							<Button
-								class="app__chart-reset"
-								on:click={(e) => resetChart(e)}
-							>
-								<Label>Reset</Label>
-							</Button>
-						{/if}
-					</div>
-					<div class="app__chart-settings">
-						<OuterRadius />
-						<InnerRadius />
-						{#if $FakeChartItems.length > 1}
-							<Gap />
-						{:else}
-							<Gap disabled />
-						{/if}
-					</div>
-					<div class="app__chart-svg app__chart-svg--params">
-						<div id="code-copy">
-							<svg
-								xmlns="http://www.w3.org/2000/svg"
-								id="sv"
-								width={viewBoxSize}
-								height={viewBoxSize}
-								{viewBox}
-							>
-								{#each $ChartItems as { id, fill, d }}
-									<path {id} {fill} {d} />
-								{/each}
-							</svg>
-						</div>
-					</div>
-					<div class="app__chart-export app__chart-export--params">
-						<ExportPanel />
-					</div>
-				</div>
-				<div class="app__data app__data--params">
-					<div class="app__data-header">
-						<h4
-							class="mdc-typography--headline6 mdc-typography--itemsheadline"
-						>
-							<!-- <span>Chart Items ({$ChartItems.length})</span> -->
-						</h4>
-						<div
-							class="app__data-buttons app__data-buttons--params"
-						>
-							<Button
-								class=""
-								type="submit"
-								on:click={(e) => addNewChartItem(e)}
-								variant="unelevated"
-							>
-								<Icon class="material-icons">add</Icon><Label
-									>Add new item</Label
-								>
-							</Button>
-							{#if $ChartItems.length < 2}
-								<Button disabled>
-									<Label>Delete all</Label>
+			<div>
+				<TabBar tabs={['Donut/Pie', 'Line', 'Bar']} let:tab bind:active>
+					<!-- Note: the `tab` property is required! -->
+					<Tab {tab}>
+					  <Label>{tab}</Label>
+					</Tab>
+				  </TabBar>
+			</div>
+			{#if active === 'Donut/Pie'}
+			<Paper variant="unelevated">
+			<Content>
+				<div class="app__form app__form--params">
+					<div class="app__chart app__chart--params">
+						<div class="app__chart-canvas pp__chart-canvas--params" />
+						<div class="app__chart-header app__chart-header--params">
+							<h4 class="mdc-typography--headline6">SVG Settings</h4>
+							{#if $Radius.gap === 0 && $Radius.inner === 60 && $Radius.outer === 90}
+								<Button class="app__chart-reset" disabled>
+									<Label>Reset</Label>
 								</Button>
 							{:else}
-								<Button on:click={(e) => deleteAllItems(e)}>
-									<Label>Delete all</Label>
+								<Button
+									class="app__chart-reset"
+									on:click={(e) => resetChart(e)}
+								>
+									<Label>Reset</Label>
 								</Button>
 							{/if}
 						</div>
-						<div class="app__data-scroll-withshadows">
-							{#if topShadow}
-								<div
-									class="app__data-scroll-shadowtop app__data-scroll-shadowtop--params"
-								/>
+						<div class="app__chart-settings">
+							<OuterRadius />
+							<InnerRadius />
+							{#if $FakeChartItems.length > 1}
+								<Gap />
+							{:else}
+								<Gap disabled />
 							{/if}
-							{#if bottomShadow}
-								<div
-									class="app__data-scroll-shadowbottom app__data-scroll-shadowbottom--params"
-								/>
-							{/if}
-							<div
-								class="app__data-scroll app__data-scroll--params"
+						</div>
+						<div class="app__chart-svg app__chart-svg--params">
+							<div id="code-copy">
+								<svg
+									xmlns="http://www.w3.org/2000/svg"
+									id="sv"
+									width={viewBoxSize}
+									height={viewBoxSize}
+									{viewBox}
+								>
+									{#each $ChartItems as { id, fill, d }}
+										<path {id} {fill} {d} />
+									{/each}
+								</svg>
+							</div>
+						</div>
+						<div class="app__chart-export app__chart-export--params">
+							<ExportPanel />
+						</div>
+					</div>
+					<div class="app__data app__data--params">
+						<div class="app__data-header">
+							<h4
+								class="mdc-typography--headline6 mdc-typography--itemsheadline"
 							>
-								{#each $ChartItems as { id, value, fill }}
-									<ChartItem {id} {value} {fill} />
-								{/each}
+								<!-- <span>Chart Items ({$ChartItems.length})</span> -->
+							</h4>
+							<div
+								class="app__data-buttons app__data-buttons--params"
+							>
+								<Button
+									class=""
+									type="submit"
+									on:click={(e) => addNewChartItem(e)}
+									variant="unelevated"
+								>
+									<Icon class="material-icons">add</Icon><Label
+										>Add new item</Label
+									>
+								</Button>
+								{#if $ChartItems.length < 2}
+									<Button disabled>
+										<Label>Delete all</Label>
+									</Button>
+								{:else}
+									<Button on:click={(e) => deleteAllItems(e)}>
+										<Label>Delete all</Label>
+									</Button>
+								{/if}
+							</div>
+							<div class="app__data-scroll-withshadows">
+								{#if topShadow}
+									<div
+										class="app__data-scroll-shadowtop app__data-scroll-shadowtop--params"
+									/>
+								{/if}
+								{#if bottomShadow}
+									<div
+										class="app__data-scroll-shadowbottom app__data-scroll-shadowbottom--params"
+									/>
+								{/if}
+								<div
+									class="app__data-scroll app__data-scroll--params"
+								>
+									{#each $ChartItems as { id, value, fill }}
+										<ChartItem {id} {value} {fill} />
+									{/each}
+								</div>
 							</div>
 						</div>
 					</div>
 				</div>
-			</div>
+			</Content>
+			</Paper>
+		{:else if active === 'Line'}
+			<Paper variant="unelevated">
+			<Content>
+				In progress
+			</Content>
+			</Paper>
+		{:else if active === 'Bar'}
+			<Paper variant="unelevated">
+			<Content>
+				In progress
+			</Content>
+			</Paper>
+		{/if}
 		</div>
 	</div>
 </main>
