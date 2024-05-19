@@ -1,8 +1,10 @@
 node_modules/
-DS_Store
+.DS_Store
 .code-workspace
 public/build
 public/robots.txt
 .vercelignore
 .vercel
 package-lock.json
+.vscode/*
+settings.json

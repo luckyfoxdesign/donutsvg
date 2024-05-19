@@ -1,7 +1,10 @@
 <script>
 	import { onMount } from "svelte";
 	import Button, { Label } from "@smui/button";
+	import Tab from "@smui/tab";
+	import TabBar from "@smui/tab-bar";
 	import { Icon } from "@smui/icon-button";
+	import Paper, { Content } from "@smui/paper";
 	import OuterRadius from "./lib/OuterRadius.svelte";
 	import InnerRadius from "./lib/InnerRadius.svelte";
 	import ExportPanel from "./lib/ExportPanel.svelte";
@@ -22,6 +25,8 @@
 		threshold: 1.0,
 	};
 
+	let active = "Donut/Pie";
+
 	onMount(async () => {
 		scrollView = await document.querySelector(".app__data-scroll");
 		let zeroItem = await document.querySelector(".app__data-item--0");
@@ -36,7 +41,7 @@
 
 	function addNewChartItem(e) {
 		if ($FakeChartItems.length > 11) {
-			return
+			return;
 		} else {
 			$FakeChartItems.push({
 				id: 0,
@@ -46,25 +51,28 @@
 				start: 0,
 				end: 0,
 				d: "",
-			})
-			writeAnglesAndPathsFakearr($FakeChartItems, $Radius)
-			$ChartItems = $FakeChartItems
+			});
+			writeAnglesAndPathsFakearr($FakeChartItems, $Radius);
+			$ChartItems = $FakeChartItems;
 			setTimeout(() => {
-				document.querySelector(`.app__data-item--${$ChartItems.length - 1}`).scrollIntoView({ behavior: 'smooth', block: 'end' });
-			}, 50)
+				document
+					.querySelector(`.app__data-item--${$ChartItems.length - 1}`)
+					.scrollIntoView({ behavior: "smooth", block: "end" });
+			}, 50);
 		}
-		if ($FakeChartItems.length >= 7 && $FakeChartItems.length < 13) observeLastChartItem()
+		if ($FakeChartItems.length >= 7 && $FakeChartItems.length < 13)
+			observeLastChartItem();
 	}
 
 	function observeLastChartItem() {
 		setTimeout(() => {
 			let observerItem = document.querySelector(
-				`.app__data-item--${$FakeChartItems.length - 1}`
+				`.app__data-item--${$FakeChartItems.length - 1}`,
 			);
 			let observer = new IntersectionObserver((entries, observer) => {
 				for (let i = 1; i < $FakeChartItems.length - 1; i++) {
 					observer.unobserve(
-						document.querySelector(`.app__data-item--${i}`)
+						document.querySelector(`.app__data-item--${i}`),
 					);
 				}
 				handleScrollViewShadows(entries, "bottom", observerItem);
@@ -122,7 +130,7 @@
 	<div class="app app_size">
 		<div class="app__container">
 			<div class="app__app-title app__app-title--params">
-				<div class="mdc-typography--headline4">Piedog <a href="https://forms.gle/6owsZ9sS5Rf7Baw28" style="color: red; font-weight: 700;" target="_blank">Participate in Our Quick Survey to Enhance the Tool!</a> </div>
+				<div class="mdc-typography--headline4">Piedog</div>
 				<div class="app__app-description">
 					<div class="mdc-typography--subtitle1">
 						Generate pie or donut chart in svg/png
@@ -160,6 +168,13 @@
 						</div>
 					</div>
 				</div>
+			</div>
+			<div style="padding-top: 12px;">
+				Checkout a <a
+					href="https://makemechart.com/chart/doughnut?old=true"
+					target="_blank">new version</a
+				>
+				with additional customization and other charts!
 			</div>
 			<div class="app__form app__form--params">
 				<div class="app__chart app__chart--params">
