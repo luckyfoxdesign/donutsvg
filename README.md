@@ -2,6 +2,12 @@
 
 Based on [Svelte](https://github.com/sveltejs/svelte) and [Svelte material](https://github.com/hperrin/svelte-material-ui)
 
+## Checkout a new version
+- Additional customization features
+- New charts
+[makemechart.com](https://makemechart.com/chart/doughnut?old=github)
+
+
 ## Run in docker
 Just simply type `docker compose up -d` in a terminal to run the app.
 
