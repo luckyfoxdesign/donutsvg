@@ -170,7 +170,7 @@
 				</div>
 			</div>
 			<div style="padding-top: 12px;">
-				Checkout a <a
+				Check out a <a
 					href="https://makemechart.com/chart/doughnut?old=true"
 					target="_blank">new version</a
 				>
