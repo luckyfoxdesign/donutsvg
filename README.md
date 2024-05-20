@@ -2,7 +2,7 @@
 
 Based on [Svelte](https://github.com/sveltejs/svelte) and [Svelte material](https://github.com/hperrin/svelte-material-ui)
 
-## Checkout a new version
+## Check out a new version
 - Additional customization features for charts
 - Added new charts
     - Doughnut
