@@ -8,7 +8,7 @@ Based on [Svelte](https://github.com/sveltejs/svelte) and [Svelte material](http
     - Doughnut
     - Line
 
-[makemechart.com](https://makemechart.com/chart/doughnut?old=github)
+[makemechart.com](https://makemechart.com/chart/donut?old=github)
 
 
 ## Run in docker
