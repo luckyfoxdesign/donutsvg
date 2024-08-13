@@ -169,12 +169,32 @@
 					</div>
 				</div>
 			</div>
-			<div style="padding-top: 12px;">
-				Check out a <a
-					href="https://makemechart.com/chart/doughnut?old=true"
-					target="_blank">new version</a
-				>
-				with additional customization and other charts!
+			<div
+				style="display: flex; flex-direction:row; margin-top: 12px; align-items: center; padding:12px; border: 1px solid #ccc; border-radius: 12px;"
+			>
+				<div style="display: flex; flex-direction: column;">
+					<span>
+						Check out a <a
+							href="https://makemechart.com/chart/doughnut?old=true"
+							target="_blank">new version</a
+						>
+						with additional customization and other charts!
+					</span>
+					<a href="https://forms.gle/SzJRBRn7LDBAW2zd7"
+						>Write your ideas how can I improve the tools!</a
+					>
+				</div>
+				<span style="margin-left: auto;">
+					<a
+						href="https://www.buymeacoffee.com/luckyfoxdesign"
+						target="_blank"
+						style="display: flex; align-items:center;"
+						><img
+							height="40"
+							src="https://img.buymeacoffee.com/button-api/?text=Buy me a coffee&emoji=&slug=luckyfoxdesign&button_colour=BD5FFF&font_colour=ffffff&font_family=Lato&outline_colour=000000&coffee_colour=FFDD00"
+						/></a
+					>
+				</span>
 			</div>
 			<div class="app__form app__form--params">
 				<div class="app__chart app__chart--params">
