@@ -1,16 +1,34 @@
 import { defineConfig } from "vite";
 import { svelte } from "@sveltejs/vite-plugin-svelte";
 
-// https://vite.dev/config/
-export default {
+export default defineConfig({
   plugins: [svelte()],
   build: {
-    cssMinify: false,
+    cssMinify: true,
+    sourcemap: false,
+    target: "esnext",
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          smui: [
+            "@smui/button",
+            "@smui/icon-button",
+            "@smui/list",
+            "@smui/menu",
+            "@smui/menu-surface",
+            "@smui/paper",
+            "@smui/snackbar",
+            "@smui/tab",
+            "@smui/tab-bar",
+            "@smui/textfield",
+          ],
+          canvg: ["canvg"],
+        },
+      },
+    },
   },
   server: {
     host: true,
-    port: 3000, // change to your desired port
-    strictPort: true, // (optional) fails if port is taken
-    hmr: true, // HMR is enabled by default in Vite, but you can explicitly set this
+    port: 3000,
   },
-};
+});
