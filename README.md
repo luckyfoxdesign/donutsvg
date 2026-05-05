@@ -14,6 +14,9 @@ Based on [Svelte](https://github.com/sveltejs/svelte) and [Svelte material](http
 ## Run in docker
 Just simply type `docker compose up -d` in a terminal to run the app.
 
+## Development rule
+All project commands must be run inside Docker Compose. See [AGENTS.md](./AGENTS.md).
+
 ## Features
 - Copy svg to clipboard and paste in the sketch or figma
 - Copy svg code from text field
