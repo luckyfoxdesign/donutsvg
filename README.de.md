@@ -4,7 +4,7 @@
 
 Browser-Tool zur Erstellung von Kreis- und Ringdiagrammen mit Export als SVG oder PNG. Keine Anmeldung, keine Datenübertragung an einen Server.
 
-[Live-Demo →](https://makemechart.com/chart/doughnut?old=true)
+[Live-Demo →](https://donutsvg.luckyfox.design/)
 
 ![Piedog preview](./public/img/workpreview.gif)
 

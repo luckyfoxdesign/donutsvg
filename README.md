@@ -4,7 +4,7 @@
 
 Browser tool to create pie and donut charts and export them as SVG or PNG. No login, no data sent to a server.
 
-[Live demo →](https://makemechart.com/chart/doughnut?old=true)
+[Live demo →](https://donutsvg.luckyfox.design/)
 
 ![Piedog preview](./public/img/workpreview.gif)
 

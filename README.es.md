@@ -4,7 +4,7 @@
 
 Herramienta de navegador para crear gráficos de sectores y de anillos y exportarlos como SVG o PNG. Sin registro, sin envío de datos a ningún servidor.
 
-[Demo en vivo →](https://makemechart.com/chart/doughnut?old=true)
+[Demo en vivo →](https://donutsvg.luckyfox.design/)
 
 ![Piedog preview](./public/img/workpreview.gif)
 

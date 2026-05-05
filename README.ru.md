@@ -4,7 +4,7 @@
 
 Браузерный инструмент для создания круговых и кольцевых диаграмм с экспортом в SVG или PNG. Без регистрации, без отправки данных на сервер.
 
-[Открыть демо →](https://makemechart.com/chart/doughnut?old=true)
+[Открыть демо →](https://donutsvg.luckyfox.design/)
 
 ![Piedog preview](./public/img/workpreview.gif)
 
