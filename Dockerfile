@@ -1,3 +1,3 @@
 FROM node:22-alpine
-RUN npm install -g vercel
+RUN apk add --no-cache bash && npm install -g vercel
 WORKDIR /donutsvg
