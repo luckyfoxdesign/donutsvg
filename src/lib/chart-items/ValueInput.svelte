@@ -5,48 +5,41 @@
 		writeAnglesAndPathsFakearr,
 		formatToNumberType,
 	} from "../../core/core.js";
-	import { Radius, ChartItems, FakeChartItems } from "../../store.js";
+	import { Radius, FakeChartItems } from "../../store.js";
 
 	function writeNewValue(o) {
-		let target = o.target;
-		let item = $FakeChartItems.find(
-			(e) => e.id == target.parentNode.parentNode.parentNode.id
-		);
-		formatValue(target.value).then((r) => {
-			let intResult = parseInt(r);
-			item.value =
-				$FakeChartItems.length < 2 && intResult == 0 ? 1 : intResult;
-			writeAnglesAndPathsFakearr($FakeChartItems, $Radius);
-			$ChartItems = $FakeChartItems;
+		let intResult = formatValue(o.target.value);
+
+		FakeChartItems.update((items) => {
+			let nextItems = items.map((item) =>
+				item.uid === uid
+					? {
+							...item,
+							value: items.length < 2 && intResult == 0 ? 1 : intResult,
+						}
+					: item,
+			);
+
+			return writeAnglesAndPathsFakearr(nextItems, $Radius);
 		});
 	}
 
 	function formatValue(value) {
-		return new Promise((res, rej) => {
-			switch (true) {
-				case value < 0:
-					//console.log("value<=0");
-					value = 1;
-					res(value);
-					break;
-				case isNaN(value):
-					//console.log("value=");
-					value = 1;
-					res(value);
-					break;
-				case value == "":
-					//console.log("value=");
-					value = 1;
-					res(value);
-					break;
-				default:
-					res(value);
-					break;
-			}
-		});
+		let numberValue = parseInt(value);
+
+		switch (true) {
+			case numberValue < 0:
+				return 1;
+			case isNaN(numberValue):
+				return 1;
+			case value == "":
+				return 1;
+			default:
+				return numberValue;
+		}
 	}
 
-	export let value, id;
+	export let uid, value, id;
 </script>
 
 <div class="settings-input">

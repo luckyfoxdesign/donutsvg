@@ -33,7 +33,7 @@ export function computeChartArc(startAngle, endAngle, outerRadius, innerRadius) 
 }
 
 export function getHexStringColor() {
-	return "#" + Math.floor(Math.random() * 16777215).toString(16)
+	return "#" + Math.floor(Math.random() * 16777215).toString(16).padStart(6, "0")
 }
 
 export function formatToNumberType(e) {
@@ -49,23 +49,48 @@ export function formatToNumberType(e) {
 
 export function writeAnglesAndPathsFakearr(fakeChartItems, chartParams, en) {
 	let multiplier = !!!en ? 359.99 : 360
-	fakeChartItems.map((e, i) => {
-		e.id = i
-		let part = (e.value / returnItemsSumm(fakeChartItems)) * multiplier
-		if (e.id != 0) {
-			e.start = fakeChartItems.find((f) => f.id == i - 1).end + chartParams.gap
-			e.end = fakeChartItems.find((f) => f.id == i - 1).end + part
-			e.d = computeChartArc(e.start, e.end, chartParams.outer, chartParams.inner)
+	let itemsSumm = returnItemsSumm(fakeChartItems)
+
+	if (!fakeChartItems.length || itemsSumm <= 0) {
+		return fakeChartItems.map((item, i) => ({
+			...item,
+			id: i,
+			start: 0,
+			end: 0,
+			d: "",
+		}))
+	}
+
+	let nextItems = []
+
+	fakeChartItems.forEach((item, i) => {
+		let part = (item.value / itemsSumm) * multiplier
+		let start
+		let end
+
+		if (i != 0) {
+			let previousItem = nextItems[i - 1]
+			start = previousItem.end + chartParams.gap
+			end = previousItem.end + part
 		} else {
-			e.start = chartParams.gap == 0 ? 0 : chartParams.gap / 2
-			e.end = chartParams.gap == 0 ? part : part - chartParams.gap / 2
-			e.d = computeChartArc(e.start, e.end, chartParams.outer, chartParams.inner)
+			start = chartParams.gap == 0 ? 0 : chartParams.gap / 2
+			end = chartParams.gap == 0 ? part : part - chartParams.gap / 2
 		}
+
+		nextItems.push({
+			...item,
+			id: i,
+			start,
+			end,
+			d: computeChartArc(start, end, chartParams.outer, chartParams.inner),
+		})
 	})
+
+	return nextItems
 }
 
 function returnItemsSumm(fakeChartItems) {
 	return fakeChartItems.reduce((r, s) => {
-		return r + s.value
+		return r + Number(s.value || 0)
 	}, 0)
 }

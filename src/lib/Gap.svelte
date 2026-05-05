@@ -2,7 +2,6 @@
   import HelperText from "@smui/textfield/helper-text";
   import Textfield from "@smui/textfield";
   import {
-    computeChartArc,
     formatToNumberType,
     writeAnglesAndPathsFakearr,
   } from "../core/core.js";
@@ -11,38 +10,37 @@
   function changeItemsGap(e) {
     if ($ChartItems.length > 1) {
       let gap = parseInt(e.target.value);
-      formatGap(gap).then((r) => {
-        $Radius.gap = r;
-        writeAnglesAndPathsFakearr($FakeChartItems, $Radius);
-        $ChartItems = $FakeChartItems;
+      let nextRadius;
+
+      Radius.update((radius) => {
+        nextRadius = { ...radius, gap: formatGap(gap) };
+        return nextRadius;
       });
+
+      FakeChartItems.update((items) =>
+        writeAnglesAndPathsFakearr(items, nextRadius),
+      );
     } else e.target.value = 0;
   }
 
   function formatGap(value) {
     let gap = value;
-    return new Promise((res, rej) => {
-      switch (true) {
-        case gap < 0:
-          //console.log("gap<0");
-          gap = 0;
-          res(gap);
-          break;
-        case gap > 12:
-          //console.log("gap>10");
-          gap = 12;
-          res(gap);
-          break;
-        case isNaN(gap):
-          //console.log("gp=");
-          gap = 0;
-          res(gap);
-          break;
-        default:
-          res(gap);
-          break;
-      }
-    });
+
+    switch (true) {
+      case gap < 0:
+        gap = 0;
+        break;
+      case gap > 12:
+        gap = 12;
+        break;
+      case isNaN(gap):
+        gap = 0;
+        break;
+      default:
+        break;
+    }
+
+    return gap;
   }
 
   export let disabled;

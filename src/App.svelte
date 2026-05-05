@@ -10,9 +10,8 @@
 	import ExportPanel from "./lib/ExportPanel.svelte";
 	import Gap from "./lib/Gap.svelte";
 	import ChartItem from "./lib/chart-items/ChartItem.svelte";
-	import { Radius, ChartItems, FakeChartItems } from "./store.js";
+	import { Radius, ChartItems, FakeChartItems, createChartItem } from "./store.js";
 	import {
-		computeChartArc,
 		getHexStringColor,
 		writeAnglesAndPathsFakearr,
 	} from "./core/core.js";
@@ -38,28 +37,29 @@
 	$: viewBoxSize = $Radius.outer * 2;
 	$: viewBox = `0 0 ${viewBoxSize} ${viewBoxSize}`;
 
-	$: $ChartItems = $FakeChartItems;
-
 	function addNewChartItem(e) {
 		trackEvent('add_chart_item', { item_count: $FakeChartItems.length + 1 });
 		if ($FakeChartItems.length > 11) {
 			return;
 		} else {
-			$FakeChartItems.push({
-				id: 0,
-				fill: getHexStringColor(),
-				// value: Math.floor(Math.random() * (100 - 0 + 1)) + 0,
-				value: 50,
-				start: 0,
-				end: 0,
-				d: "",
-			});
-			writeAnglesAndPathsFakearr($FakeChartItems, $Radius);
-			$ChartItems = $FakeChartItems;
+			let nextItemIndex = $FakeChartItems.length;
+			FakeChartItems.update((items) =>
+				writeAnglesAndPathsFakearr(
+					[
+						...items,
+						createChartItem({
+							fill: getHexStringColor(),
+							// value: Math.floor(Math.random() * (100 - 0 + 1)) + 0,
+							value: 50,
+						}),
+					],
+					$Radius,
+				),
+			);
 			setTimeout(() => {
 				document
-					.querySelector(`.app__data-item--${$ChartItems.length - 1}`)
-					.scrollIntoView({ behavior: "smooth", block: "end" });
+					.querySelector(`.app__data-item--${nextItemIndex}`)
+					?.scrollIntoView({ behavior: "smooth", block: "end" });
 			}, 50);
 		}
 		if ($FakeChartItems.length >= 7 && $FakeChartItems.length < 13)
@@ -110,11 +110,11 @@
 
 	function resetChart() {
 		trackEvent('reset_chart');
-		$Radius.gap = 0;
-		$Radius.inner = 60;
-		$Radius.outer = 90;
-		writeAnglesAndPathsFakearr($FakeChartItems, $Radius);
-		$ChartItems = $FakeChartItems;
+		let nextRadius = { gap: 0, inner: 60, outer: 90 };
+		Radius.update(() => nextRadius);
+		FakeChartItems.update((items) =>
+			writeAnglesAndPathsFakearr(items, nextRadius),
+		);
 	}
 
 	function deleteAllItems(e) {
@@ -122,10 +122,14 @@
 		if ($ChartItems.length > 1) {
 			topShadow = false;
 			bottomShadow = false;
-			$Radius.gap = 0;
-			$FakeChartItems.splice(1);
-			writeAnglesAndPathsFakearr($FakeChartItems, $Radius);
-			$ChartItems = $FakeChartItems;
+			let nextRadius;
+			Radius.update((radius) => {
+				nextRadius = { ...radius, gap: 0 };
+				return nextRadius;
+			});
+			FakeChartItems.update((items) =>
+				writeAnglesAndPathsFakearr(items.slice(0, 1), nextRadius),
+			);
 		}
 	}
 </script>
@@ -186,6 +190,7 @@
 						Check out a <a
 							href="https://makemechart.com/chart/doughnut?old=true"
 							target="_blank"
+							rel="noopener noreferrer"
 							onclick={() => trackEvent('promo_link_click', { label: 'new_version' })}>new version</a
 						>
 						with additional customization and other charts!
@@ -199,9 +204,12 @@
 					<a
 						href="https://www.buymeacoffee.com/luckyfoxdesign"
 						target="_blank"
+						rel="noopener noreferrer"
+						aria-label="Buy me a coffee"
 						style="display: flex; align-items:center;"
 						onclick={() => trackEvent('promo_link_click', { label: 'buy_me_coffee' })}
 						><img
+							alt="Buy me a coffee"
 							height="40"
 							src="https://img.buymeacoffee.com/button-api/?text=Buy me a coffee&emoji=&slug=luckyfoxdesign&button_colour=BD5FFF&font_colour=ffffff&font_family=Lato&outline_colour=000000&coffee_colour=FFDD00"
 						/></a
@@ -210,7 +218,7 @@
 			</div>
 			<div class="app__form app__form--params">
 				<div class="app__chart app__chart--params">
-					<div class="app__chart-canvas pp__chart-canvas--params" />
+					<div class="app__chart-canvas pp__chart-canvas--params"></div>
 					<div class="app__chart-header app__chart-header--params">
 						<h4 class="mdc-typography--headline6">SVG Settings</h4>
 						{#if $Radius.gap === 0 && $Radius.inner === 60 && $Radius.outer === 90}
@@ -244,7 +252,7 @@
 								height={viewBoxSize}
 								{viewBox}
 							>
-								{#each $ChartItems as { id, fill, d }}
+								{#each $ChartItems as { uid, id, fill, d } (uid)}
 									<path {id} {fill} {d} />
 								{/each}
 							</svg>
@@ -288,18 +296,18 @@
 							{#if topShadow}
 								<div
 									class="app__data-scroll-shadowtop app__data-scroll-shadowtop--params"
-								/>
+								></div>
 							{/if}
 							{#if bottomShadow}
 								<div
 									class="app__data-scroll-shadowbottom app__data-scroll-shadowbottom--params"
-								/>
+								></div>
 							{/if}
 							<div
 								class="app__data-scroll app__data-scroll--params"
 							>
-								{#each $ChartItems as { id, value, fill }}
-									<ChartItem {id} {value} {fill} />
+								{#each $ChartItems as { uid, value, fill }, id (uid)}
+									<ChartItem {uid} {id} {value} {fill} />
 								{/each}
 							</div>
 						</div>

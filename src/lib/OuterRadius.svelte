@@ -1,58 +1,49 @@
 <script>
 	import HelperText from "@smui/textfield/helper-text"
 	import Textfield from "@smui/textfield"
-	import { computeChartArc, formatToNumberType } from "../core/core.js"
-	import { Radius, ChartItems, FakeChartItems } from "../store.js"
+	import { formatToNumberType, writeAnglesAndPathsFakearr } from "../core/core.js"
+	import { Radius, FakeChartItems } from "../store.js"
 
 	function writeOuterRadius(e) {
 		let value = parseInt(e.target.value)
-		formatOuterRadius($Radius.inner, value).then((r) => {
-			//console.log(r)
-			$Radius.inner = r.ir
-			$Radius.outer = r.or
-			$FakeChartItems.map((e) => {
-				e.d = computeChartArc(e.start, e.end, r.or, r.ir)
-			})
-			$ChartItems = $FakeChartItems
+		let nextRadius
+
+		Radius.update((radius) => {
+			let r = formatOuterRadius(radius.inner, value)
+			nextRadius = { ...radius, inner: r.ir, outer: r.or }
+			return nextRadius
 		})
+
+		FakeChartItems.update((items) =>
+			writeAnglesAndPathsFakearr(items, nextRadius),
+		)
 	}
 
 	function formatOuterRadius(innerRadiusValue, outerRadiusValue) {
 		let or = outerRadiusValue
 		let ir = innerRadiusValue
-		return new Promise((res, rej) => {
-			switch (true) {
-				case isNaN(or):
-					//console.log("or=")
-					or = 1
-					res({ or: or, ir: ir })
-					break
-				case or < ir:
-					//console.log("or<ir")
-					if (or < 1) or = 1
-					ir = or - 1
-					res({ or: or, ir: ir })
-					break
-				case or > 150:
-					//console.log("or>150")
-					or = 150
-					res({ or: or, ir: ir })
-					break
-				case or <= 0:
-					//console.log("or<=0")
-					or = 1
-					res({ or: or, ir: ir })
-					break
-				case or == ir:
-					//console.log("or==ir")
-					ir = ir - 1
-					res({ or: or, ir: ir })
-					break
-				default:
-					res({ or: or, ir: ir })
-					break
-			}
-		})
+		switch (true) {
+			case isNaN(or):
+				or = 1
+				break
+			case or < ir:
+				if (or < 1) or = 1
+				ir = or - 1
+				break
+			case or > 150:
+				or = 150
+				break
+			case or <= 0:
+				or = 1
+				break
+			case or == ir:
+				ir = ir - 1
+				break
+			default:
+				break
+		}
+
+		return { or: or, ir: ir }
 	}
 </script>
 
@@ -62,7 +53,7 @@
 		label="Outer radius"
 		onchange={(e) => writeOuterRadius(e)}
 		oninput={(e) => formatToNumberType(e)}
-		value="{$Radius.outer}"
+		value={$Radius.outer}
 		input$aria-controls="helper-text-outer-radius"
 		input$aria-describedby="helper-text-outer-radius"
 	>
