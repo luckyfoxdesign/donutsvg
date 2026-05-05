@@ -53,8 +53,8 @@
     <Textfield
       class="settings-input__gap"
       label="Gap"
-      on:change={(e) => changeItemsGap(e)}
-      on:input={(e) => formatToNumberType(e)}
+      onchange={(e) => changeItemsGap(e)}
+      oninput={(e) => formatToNumberType(e)}
       value={$Radius.gap}
       input$aria-controls="helper-text-outer-radius"
       input$aria-describedby="helper-text-outer-radius"

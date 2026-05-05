@@ -44,7 +44,7 @@
 
 <Button
   class="app__chart-clipboard app__chart-clipboard--params"
-  on:click={(e) => copyToClipboard(e)}
+  onclick={(e) => copyToClipboard(e)}
 >
   <Icon class="material-icons">file_copy</Icon>
   <Label>Copy to clipboard</Label>
@@ -54,7 +54,7 @@
   use:Anchor
   bind:this={anchor}
 >
-  <Button on:click={() => menu.setOpen(true)}
+  <Button onclick={() => menu.setOpen(true)}
     ><Icon class="material-icons">save</Icon>Save As...</Button
   >
   <Menu
@@ -64,13 +64,13 @@
     anchorCorner="BOTTOM_LEFT"
   >
     <List twoLine>
-      <Item on:SMUI:action={saveAsSVG}>
+      <Item onSMUIAction={saveAsSVG}>
         <Text>
           <PrimaryText>SVG</PrimaryText>
           <SecondaryText>Save chart as SVG file</SecondaryText>
         </Text>
       </Item>
-      <Item on:SMUI:action={saveAsPNG}>
+      <Item onSMUIAction={saveAsPNG}>
         <Text>
           <PrimaryText>PNG</PrimaryText>
           <SecondaryText>Save chart as PNG file</SecondaryText>

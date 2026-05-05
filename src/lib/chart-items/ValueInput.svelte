@@ -53,8 +53,8 @@
 	<Textfield
 		label="Arc {id} value"
 		{value}
-		on:change={(e) => writeNewValue(e)}
-		on:input={(e) => formatToNumberType(e)}
+		onchange={(e) => writeNewValue(e)}
+		oninput={(e) => formatToNumberType(e)}
 		input$aria-controls="helper-text-value-numbers"
 		input$aria-describedby="helper-text-value-numbers"
 	/>

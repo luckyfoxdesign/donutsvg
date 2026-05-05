@@ -9,8 +9,25 @@
     "preview": "vite preview"
   },
   "devDependencies": {
+    "@material/typography": "^14.0.0",
+    "@smui/button": "^9.0.0-beta.12",
+    "@smui/icon-button": "^9.0.0-beta.12",
+    "@smui/list": "^9.0.0-beta.12",
+    "@smui/menu": "^9.0.0-beta.12",
+    "@smui/menu-surface": "^9.0.0-beta.12",
+    "@smui/paper": "^9.0.0-beta.12",
+    "@smui/snackbar": "^9.0.0-beta.12",
+    "@smui/tab": "^9.0.0-beta.12",
+    "@smui/tab-bar": "^9.0.0-beta.12",
+    "@smui/textfield": "^9.0.0-beta.12",
     "@sveltejs/vite-plugin-svelte": "^7.1.0",
     "svelte": "^5.55.5",
     "vite": "^8.0.10"
+  },
+  "dependencies": {
+    "canvg": "^4.0.1",
+    "copy-to-clipboard": "^3.3.3",
+    "file-saver": "^2.0.5",
+    "svelte-material-ui": "^9.0.0-beta.12"
   }
 }

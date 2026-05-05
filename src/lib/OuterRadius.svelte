@@ -60,8 +60,8 @@
 	<Textfield
 		class="settings-input__outer-radius"
 		label="Outer radius"
-		on:change="{(e) => writeOuterRadius(e)}"
-		on:input="{(e) => formatToNumberType(e)}"
+		onchange={(e) => writeOuterRadius(e)}
+		oninput={(e) => formatToNumberType(e)}
 		value="{$Radius.outer}"
 		input$aria-controls="helper-text-outer-radius"
 		input$aria-describedby="helper-text-outer-radius"

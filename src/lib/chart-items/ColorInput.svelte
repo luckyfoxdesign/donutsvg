@@ -35,7 +35,7 @@
 		withLeadingIcon
 		label="Color"
 		value={fill}
-		on:change={(e) => changeItemColor(e)}
+		onchange={(e) => changeItemColor(e)}
 		input$aria-controls="helper-text-color-hex"
 		input$aria-describedby="helper-text-color-hex"
 	>

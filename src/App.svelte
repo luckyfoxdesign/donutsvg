@@ -208,7 +208,7 @@
 						{:else}
 							<Button
 								class="app__chart-reset"
-								on:click={(e) => resetChart(e)}
+								onclick={(e) => resetChart(e)}
 							>
 								<Label>Reset</Label>
 							</Button>
@@ -255,7 +255,7 @@
 							<Button
 								class=""
 								type="submit"
-								on:click={(e) => addNewChartItem(e)}
+								onclick={(e) => addNewChartItem(e)}
 								variant="unelevated"
 							>
 								<Icon class="material-icons">add</Icon><Label
@@ -267,7 +267,7 @@
 									<Label>Delete all</Label>
 								</Button>
 							{:else}
-								<Button on:click={(e) => deleteAllItems(e)}>
+								<Button onclick={(e) => deleteAllItems(e)}>
 									<Label>Delete all</Label>
 								</Button>
 							{/if}

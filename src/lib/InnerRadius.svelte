@@ -59,8 +59,8 @@
 	<Textfield 
 	class="settings-input__inner-radius" 
 	label="Inner radius" 
-	on:change="{(e) => writeInnerRadius(e)}" 
-	on:input="{(e) => formatToNumberType(e)}" 
+	onchange={(e) => writeInnerRadius(e)} 
+	oninput={(e) => formatToNumberType(e)} 
 	value="{$Radius.inner}" 
 	input$aria-controls="helper-text-outer-radius" 
 	input$aria-describedby="helper-text-outer-radius" 

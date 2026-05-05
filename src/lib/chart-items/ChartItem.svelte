@@ -20,6 +20,6 @@
   <ValueInput {id} {value}/>
   <ColorInput {fill} />
   {#if $ChartItems.length > 1}
-    <IconButton class="material-icons" on:click="{(e) => removeChartItem(e)}">delete_forever</IconButton>
+    <IconButton class="material-icons" onclick={(e) => removeChartItem(e)}>delete_forever</IconButton>
   {/if}
 </div>
