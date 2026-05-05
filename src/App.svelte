@@ -16,6 +16,7 @@
 		getHexStringColor,
 		writeAnglesAndPathsFakearr,
 	} from "./core/core.js";
+	import { trackEvent } from "./lib/analytics.js";
 
 	let topShadow, bottomShadow, scrollView;
 
@@ -40,6 +41,7 @@
 	$: $ChartItems = $FakeChartItems;
 
 	function addNewChartItem(e) {
+		trackEvent('add_chart_item', { item_count: $FakeChartItems.length + 1 });
 		if ($FakeChartItems.length > 11) {
 			return;
 		} else {
@@ -107,6 +109,7 @@
 	}
 
 	function resetChart() {
+		trackEvent('reset_chart');
 		$Radius.gap = 0;
 		$Radius.inner = 60;
 		$Radius.outer = 90;
@@ -115,6 +118,7 @@
 	}
 
 	function deleteAllItems(e) {
+		trackEvent('delete_all_items', { item_count: $ChartItems.length });
 		if ($ChartItems.length > 1) {
 			topShadow = false;
 			bottomShadow = false;
@@ -141,29 +145,34 @@
 								class="mdc-typography--subtitle1"
 								href="https://twitter.com/luckyfoxdesign"
 								target="_blank"
-								rel="noopener noreferrer">Twitter</a
+								rel="noopener noreferrer"
+								onclick={() => trackEvent('social_link_click', { platform: 'twitter' })}>Twitter</a
 							>
 							<a
 								class="mdc-typography--subtitle1"
 								href="https://www.linkedin.com/in/maksim-sovenkov-b53770155/"
 								target="_blank"
-								rel="noopener noreferrer">LinkedIn</a
+								rel="noopener noreferrer"
+								onclick={() => trackEvent('social_link_click', { platform: 'linkedin' })}>LinkedIn</a
 							>
 							<a
 								class="mdc-typography--subtitle1"
 								href="https://www.behance.net/luckyfoxdesign"
 								target="_blank"
-								rel="noopener noreferrer">Behance</a
+								rel="noopener noreferrer"
+								onclick={() => trackEvent('social_link_click', { platform: 'behance' })}>Behance</a
 							>
 							<a
 								class="mdc-typography--subtitle1"
 								href="https://github.com/Luckyfoxdesign/donutsvg"
 								target="_blank"
-								rel="noopener noreferrer">Github</a
+								rel="noopener noreferrer"
+								onclick={() => trackEvent('social_link_click', { platform: 'github' })}>Github</a
 							>
 							<a
 								class="mdc-typography--subtitle1"
-								href="mailto:luckyfoxdesign@yandex.ru">Email</a
+								href="mailto:luckyfoxdesign@yandex.ru"
+								onclick={() => trackEvent('social_link_click', { platform: 'email' })}>Email</a
 							>
 						</div>
 					</div>
@@ -176,12 +185,14 @@
 					<span>
 						Check out a <a
 							href="https://makemechart.com/chart/doughnut?old=true"
-							target="_blank">new version</a
+							target="_blank"
+							onclick={() => trackEvent('promo_link_click', { label: 'new_version' })}>new version</a
 						>
 						with additional customization and other charts!
 					</span>
-					<a href="https://forms.gle/SzJRBRn7LDBAW2zd7"
-						>Write your ideas how can I improve the tools!</a
+					<a
+						href="https://forms.gle/SzJRBRn7LDBAW2zd7"
+						onclick={() => trackEvent('promo_link_click', { label: 'feedback_form' })}>Write your ideas how can I improve the tools!</a
 					>
 				</div>
 				<span style="margin-left: auto;">
@@ -189,6 +200,7 @@
 						href="https://www.buymeacoffee.com/luckyfoxdesign"
 						target="_blank"
 						style="display: flex; align-items:center;"
+						onclick={() => trackEvent('promo_link_click', { label: 'buy_me_coffee' })}
 						><img
 							height="40"
 							src="https://img.buymeacoffee.com/button-api/?text=Buy me a coffee&emoji=&slug=luckyfoxdesign&button_colour=BD5FFF&font_colour=ffffff&font_family=Lato&outline_colour=000000&coffee_colour=FFDD00"

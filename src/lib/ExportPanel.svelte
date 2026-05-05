@@ -8,10 +8,12 @@
   import copy from "copy-to-clipboard";
   import FileSave from "file-saver";
   import { Canvg } from "canvg";
+  import { trackEvent } from "./analytics.js";
 
   let anchor, menu, snackbar;
 
   async function saveAsPNG() {
+    trackEvent('export_chart', { format: 'png' });
     let parent = document.querySelector(".app__chart-canvas");
     let canvas = document.createElement("canvas");
     parent.appendChild(canvas);
@@ -29,6 +31,7 @@
   }
 
   function saveAsSVG() {
+    trackEvent('export_chart', { format: 'svg' });
     let blobSVG = new Blob([document.querySelector("#code-copy").innerHTML], {
       type: "image/svg+xml;charset=utf-8",
     });
@@ -36,6 +39,7 @@
   }
 
   function copyToClipboard() {
+    trackEvent('copy_to_clipboard');
     snackbar.open();
     setTimeout(() => snackbar.close(), 800);
     copy(document.querySelector("#code-copy").innerHTML);
