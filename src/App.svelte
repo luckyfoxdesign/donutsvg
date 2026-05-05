@@ -197,13 +197,17 @@
 				</div>
 				<span style="margin-left: auto;">
 					<a
-						class="mdc-typography--subtitle1 app__support-link"
 						href="https://www.buymeacoffee.com/luckyfoxdesign"
 						target="_blank"
 						rel="noopener noreferrer"
 						aria-label="Buy me a coffee"
+						style="display: flex; align-items:center;"
 						onclick={() => trackEvent('promo_link_click', { label: 'buy_me_coffee' })}
-						>Buy me a coffee</a
+						><img
+							alt="Buy me a coffee"
+							height="40"
+							src="https://img.buymeacoffee.com/button-api/?text=Buy me a coffee&emoji=&slug=luckyfoxdesign&button_colour=BD5FFF&font_colour=ffffff&font_family=Lato&outline_colour=000000&coffee_colour=FFDD00"
+						/></a
 					>
 				</span>
 			</div>
