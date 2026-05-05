@@ -36,6 +36,12 @@
   column-gap: 16px;
 }
 
+.app__support-link {
+  display: inline-flex;
+  align-items: center;
+  min-height: 40px;
+}
+
 .app__form {
   display: flex;
   flex-direction: row;

@@ -1,8 +1,6 @@
 <script>
 	import HelperText from "@smui/textfield/helper-text";
 	import Textfield from "@smui/textfield";
-	//import Icon from "@smui/textfield/icon/index";
-	import Icon from "@smui/textfield/icon";
 	import { writeAnglesAndPathsFakearr } from "../../core/core.js";
 	import { Radius, FakeChartItems } from "../../store.js";
 
@@ -69,7 +67,6 @@
 <div class="settings-input settings-input--color">
 	<div class="settings-input__color-row">
 		<Textfield
-			withLeadingIcon
 			label="Color"
 			invalid={invalid}
 			value={colorValue}
@@ -77,9 +74,7 @@
 			oninput={(e) => validateColorInput(e)}
 			input$aria-controls="helper-text-color-hex"
 			input$aria-describedby="helper-text-color-hex"
-		>
-			<Icon class="material-icons">color_lens</Icon>
-		</Textfield>
+		/>
 		<input
 			class="settings-input__color-picker"
 			type="color"

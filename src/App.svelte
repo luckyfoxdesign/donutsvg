@@ -3,13 +3,13 @@
 	import Button, { Label } from "@smui/button";
 	import Tab from "@smui/tab";
 	import TabBar from "@smui/tab-bar";
-	import { Icon } from "@smui/icon-button";
 	import Paper, { Content } from "@smui/paper";
 	import OuterRadius from "./lib/OuterRadius.svelte";
 	import InnerRadius from "./lib/InnerRadius.svelte";
 	import ExportPanel from "./lib/ExportPanel.svelte";
 	import Gap from "./lib/Gap.svelte";
 	import ChartItem from "./lib/chart-items/ChartItem.svelte";
+	import IconGlyph from "./lib/IconGlyph.svelte";
 	import { Radius, ChartItems, FakeChartItems, createChartItem } from "./store.js";
 	import {
 		getHexStringColor,
@@ -204,17 +204,13 @@
 				</div>
 				<span style="margin-left: auto;">
 					<a
+						class="mdc-typography--subtitle1 app__support-link"
 						href="https://www.buymeacoffee.com/luckyfoxdesign"
 						target="_blank"
 						rel="noopener noreferrer"
 						aria-label="Buy me a coffee"
-						style="display: flex; align-items:center;"
 						onclick={() => trackEvent('promo_link_click', { label: 'buy_me_coffee' })}
-						><img
-							alt="Buy me a coffee"
-							height="40"
-							src="https://img.buymeacoffee.com/button-api/?text=Buy me a coffee&emoji=&slug=luckyfoxdesign&button_colour=BD5FFF&font_colour=ffffff&font_family=Lato&outline_colour=000000&coffee_colour=FFDD00"
-						/></a
+						>Buy me a coffee</a
 					>
 				</span>
 			</div>
@@ -280,7 +276,7 @@
 								onclick={(e) => addNewChartItem(e)}
 								variant="unelevated"
 							>
-								<Icon class="material-icons">add</Icon><Label
+								<IconGlyph name="add" /><Label
 									>Add new item</Label
 								>
 							</Button>

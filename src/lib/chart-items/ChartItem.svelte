@@ -2,6 +2,7 @@
 	import ColorInput from "./ColorInput.svelte";
 	import ValueInput from "./ValueInput.svelte";
 	import IconButton from "@smui/icon-button";
+	import IconGlyph from "../IconGlyph.svelte";
 	import { Radius, ChartItems, FakeChartItems } from "../../store.js";
 	import { writeAnglesAndPathsFakearr } from "../../core/core.js";
 
@@ -23,6 +24,8 @@
 	<ValueInput {uid} {id} {value} />
 	<ColorInput {uid} {fill} />
 	{#if $ChartItems.length > 1}
-		<IconButton class="material-icons" onclick={removeChartItem}>delete_forever</IconButton>
+		<IconButton onclick={removeChartItem} aria-label="Delete item">
+			<IconGlyph name="delete" />
+		</IconButton>
 	{/if}
 </div>

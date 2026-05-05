@@ -4,11 +4,11 @@
   import List, { Item, Text, PrimaryText, SecondaryText } from "@smui/list";
   import Snackbar from "@smui/snackbar";
   import Button, { Label } from "@smui/button";
-  import { Icon } from "@smui/icon-button";
   import copy from "copy-to-clipboard";
   import FileSave from "file-saver";
   import { Canvg } from "canvg";
   import { trackEvent } from "./appEvents.js";
+  import IconGlyph from "./IconGlyph.svelte";
 
   let anchor, menu, snackbar;
 
@@ -50,7 +50,7 @@
   class="app__chart-clipboard app__chart-clipboard--params"
   onclick={(e) => copyToClipboard(e)}
 >
-  <Icon class="material-icons">file_copy</Icon>
+  <IconGlyph name="copy" />
   <Label>Copy to clipboard</Label>
 </Button>
 <div
@@ -59,7 +59,7 @@
   bind:this={anchor}
 >
   <Button onclick={() => menu.setOpen(true)}
-    ><Icon class="material-icons">save</Icon>Save As...</Button
+    ><IconGlyph name="save" />Save As...</Button
   >
   <Menu
     bind:this={menu}
