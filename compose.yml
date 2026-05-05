@@ -1,6 +1,6 @@
 services:
   s_svelteapp:
-    image: node:22-alpine
+    build: .
     container_name: c_donutsvg
     ports:
       - 3000:3000
