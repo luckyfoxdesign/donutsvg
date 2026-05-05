@@ -149,24 +149,17 @@
 						<div class="app__social-icons">
 							<a
 								class="mdc-typography--subtitle1"
-								href="https://twitter.com/luckyfoxdesign"
+								href="https://luckyfox.design"
 								target="_blank"
 								rel="noopener noreferrer"
-								onclick={() => trackEvent('social_link_click', { platform: 'twitter' })}>Twitter</a
+								onclick={() => trackEvent('social_link_click', { platform: 'website' })}>luckyfox.design</a
 							>
 							<a
 								class="mdc-typography--subtitle1"
-								href="https://www.linkedin.com/in/maksim-sovenkov-b53770155/"
+								href="https://www.linkedin.com/in/luckyfoxdesign/"
 								target="_blank"
 								rel="noopener noreferrer"
 								onclick={() => trackEvent('social_link_click', { platform: 'linkedin' })}>LinkedIn</a
-							>
-							<a
-								class="mdc-typography--subtitle1"
-								href="https://www.behance.net/luckyfoxdesign"
-								target="_blank"
-								rel="noopener noreferrer"
-								onclick={() => trackEvent('social_link_click', { platform: 'behance' })}>Behance</a
 							>
 							<a
 								class="mdc-typography--subtitle1"
@@ -177,7 +170,7 @@
 							>
 							<a
 								class="mdc-typography--subtitle1"
-								href="mailto:luckyfoxdesign@yandex.ru"
+								href="mailto:luckyfoxinthebox@gmail.com"
 								onclick={() => trackEvent('social_link_click', { platform: 'email' })}>Email</a
 							>
 						</div>

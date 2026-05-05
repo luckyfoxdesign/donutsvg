@@ -1,26 +1,30 @@
-# SVG Pie and Donut chart generator
+# Piedog — SVG Pie & Donut Chart Generator
 
-Based on [Svelte](https://github.com/sveltejs/svelte) and [Svelte material](https://github.com/hperrin/svelte-material-ui)
+**Languages:** English · [Русский](README.ru.md) · [Deutsch](README.de.md) · [Español](README.es.md)
 
-## Check out a new version
-- Additional customization features for charts
-- Added new charts
-    - Doughnut
-    - Line
+Browser tool to create pie and donut charts and export them as SVG or PNG. No login, no data sent to a server.
 
-[makemechart.com](https://makemechart.com/chart/donut?old=github)
+[Live demo →](https://makemechart.com/chart/doughnut?old=true)
 
-
-## Run in docker
-Just simply type `docker compose up -d` in a terminal to run the app.
-
-## Development rule
-All project commands must be run inside Docker Compose. See [AGENTS.md](./AGENTS.md).
+![Piedog preview](./public/img/workpreview.gif)
 
 ## Features
-- Copy svg to clipboard and paste in the sketch or figma
-- Copy svg code from text field
-- Save as png/svg
 
+- Up to 12 segments with custom colors and values
+- Adjustable outer radius, inner radius, and gap between segments
+- Export as SVG or PNG
+- Copy SVG markup to clipboard — paste directly into Figma or Sketch
 
-![donut pit chart svg generator image](./public/img/workpreview.gif "Donut pit chart svg generator`")
+## Tech stack
+
+Svelte 5 · Svelte Material UI · Vite
+
+## Run locally
+
+```sh
+docker compose up -d
+```
+
+## Author
+
+[luckyfox.design](https://luckyfox.design) · [LinkedIn](https://www.linkedin.com/in/luckyfoxdesign/) · [Buy me a coffee](https://www.buymeacoffee.com/luckyfoxdesign)
