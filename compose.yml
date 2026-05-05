@@ -1,0 +1,10 @@
+services:
+  s_svelteapp:
+    image: node:22-alpine
+    container_name: c_donutsvg
+    ports:
+      - 3000:3000
+    working_dir: /donutsvg
+    volumes:
+      - ./:/donutsvg
+    command: sh -c "npm i && npm run dev"
