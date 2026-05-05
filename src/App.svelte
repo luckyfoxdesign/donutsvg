@@ -15,7 +15,7 @@
 		getHexStringColor,
 		writeAnglesAndPathsFakearr,
 	} from "./core/core.js";
-	import { trackEvent } from "./lib/analytics.js";
+	import { initAppEvents, trackEvent } from "./lib/appEvents.js";
 
 	let topShadow, bottomShadow, scrollView;
 
@@ -28,6 +28,8 @@
 	let active = "Donut/Pie";
 
 	onMount(async () => {
+		initAppEvents();
+
 		scrollView = await document.querySelector(".app__data-scroll");
 		let zeroItem = await document.querySelector(".app__data-item--0");
 

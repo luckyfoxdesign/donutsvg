@@ -8,7 +8,7 @@
   import copy from "copy-to-clipboard";
   import FileSave from "file-saver";
   import { Canvg } from "canvg";
-  import { trackEvent } from "./analytics.js";
+  import { trackEvent } from "./appEvents.js";
 
   let anchor, menu, snackbar;
 
